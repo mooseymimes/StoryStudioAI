@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Story Studio — Projects</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#f0f4f8;
+      --glass-bg:rgba(255, 255, 255, 0.75);
+      --glass-border:rgba(255, 255, 255, 0.9);
+      --paper:#ffffff;
+      --ink:#1a1a2e;
+      --muted:#64748b;
+      --accent:#0066cc;
+      --accent-2:#0052a3;
+      --accent-glow:rgba(0, 102, 204, 0.25);
+      --line:rgba(203, 213, 225, 0.7);
+      --toolbar:rgba(248, 250, 252, 0.9);
+      --chip:#e6f3ff;
+      --danger:#dc2626;
+      --success:#16a34a;
+      --shadow-sm:0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md:0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.04);
+      --shadow-lg:0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+      --glow:0 0 24px rgba(0, 102, 204, 0.3);
+      --transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    [data-theme="dark"]{
+      --bg:#0f172a;
+      --glass-bg:rgba(30, 41, 59, 0.8);
+      --glass-border:rgba(71, 85, 105, 0.7);
+      --paper:#1e293b;
+      --ink:#f1f5f9;
+      --muted:#94a3b8;
+      --accent:#3b82f6;
+      --accent-2:#2563eb;
+      --accent-glow:rgba(59, 130, 246, 0.2);
+      --line:rgba(71, 85, 105, 0.6);
+      --toolbar:rgba(30, 41, 59, 0.9);
+      --chip:#1e3a8a;
+      --danger:#ef4444;
+      --success:#22c55e;
+      --shadow-sm:0 2px 4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+      --shadow-md:0 4px 8px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+      --shadow-lg:0 12px 24px rgba(0, 0, 0, 0.6), 0 6px 12px rgba(0, 0, 0, 0.4);
+      --glow:0 0 32px rgba(59, 130, 246, 0.25);
+    }
+    [data-theme="green"]{
+      --bg:#f0fdf4;
+      --glass-bg:rgba(240, 253, 244, 0.8);
+      --glass-border:rgba(220, 252, 231, 0.9);
+      --paper:#ffffff;
+      --ink:#14532d;
+      --muted:#64748b;
+      --accent:#16a34a;
+      --accent-2:#15803d;
+      --accent-glow:rgba(34, 197, 94, 0.2);
+      --line:rgba(187, 247, 208, 0.7);
+      --toolbar:rgba(240, 253, 244, 0.9);
+      --chip:#dcfce7;
+      --danger:#dc2626;
+      --success:#16a34a;
+    }
+    [data-theme="amoled-black"]{
+      --bg:#000000;
+      --glass-bg:rgba(10, 10, 10, 0.75);
+      --glass-border:rgba(40, 40, 40, 0.7);
+      --paper:#111111;
+      --ink:#ffffff;
+      --muted:#a0a0a0;
+      --accent:#007bff;
+      --accent-2:#0056b3;
+      --accent-glow:rgba(0, 123, 255, 0.25);
+      --line:rgba(50, 50, 50, 0.6);
+      --toolbar:rgba(15, 15, 15, 0.9);
+      --chip:#1a1a1a;
+      --danger:#ff4d4d;
+      --success:#28a745;
+      --shadow-sm:0 2px 4px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.4);
+      --shadow-md:0 4px 8px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.5);
+      --shadow-lg:0 12px 24px rgba(0, 0, 0, 0.7), 0 6px 12px rgba(0, 0, 0, 0.6);
+      --glow:0 0 32px rgba(0, 123, 255, 0.3);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%; margin:0;}
+    body{
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(0, 102, 204, 0.12), transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(0, 82, 163, 0.08), transparent 50%),
+        linear-gradient(135deg, var(--bg) 0%, #e2e8f0 50%, #cbd5e1 100%);
+      background-attachment: fixed;
+      color:var(--ink);
+      font:14px/1.5 "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial;
+      transition:var(--transition);
+    }
+    [data-theme="dark"] body{
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(59, 130, 246, 0.1), transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(37, 99, 235, 0.06), transparent 50%),
+        linear-gradient(135deg, var(--bg) 0%, #1e293b 50%, #334155 100%);
+    }
+    [data-theme="green"] body{
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(34, 197, 94, 0.12), transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(22, 163, 74, 0.08), transparent 50%),
+        linear-gradient(135deg, var(--bg) 0%, #dcfce7 50%, #bbf7d0 100%);
+    }
+    [data-theme="amoled-black"] body{ background:#000; }
+
+    #app{ display:flex; flex-direction:column; height:100%; }
+
+    header{
+      display:flex; align-items:center; gap:12px; padding:12px 20px;
+      background:linear-gradient(180deg, var(--glass-bg) 0%, var(--toolbar) 100%);
+      border-bottom:1px solid var(--glass-border);
+      box-shadow:var(--shadow-md);
+      backdrop-filter:blur(24px) saturate(180%);
+      position:sticky; top:0; z-index:10;
+    }
+    .pill{
+      padding:6px 12px; border-radius:12px; background:linear-gradient(135deg, var(--chip) 0%, var(--glass-bg) 100%);
+      color:var(--accent); font-weight:700; font-size:12px; border:1px solid var(--accent);
+      box-shadow:var(--shadow-sm);
+    }
+    .spacer{ flex:1; }
+    .btn{
+      border:1px solid var(--line); background:var(--glass-bg); color:var(--ink);
+      padding:8px 16px; border-radius:999px; cursor:pointer; transition:var(--transition); font-weight:600; font-size:13px;
+      box-shadow:var(--shadow-sm); display:inline-flex; align-items:center; gap:8px; min-height:36px;
+    }
+    .btn:hover{ border-color:var(--accent); background:var(--accent-glow); transform:translateY(-2px); box-shadow:var(--shadow-md); }
+    .btn.primary{ background:linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); color:#fff; border-color:transparent; box-shadow:var(--glow), var(--shadow-md); }
+    .btn.danger{ color:var(--danger); border-color:var(--danger); background:transparent; }
+    .btn.danger:hover{ background:var(--danger); color:#fff; }
+    .btn.sm{ padding:6px 10px; min-height:28px; font-size:12px; }
+
+    main{ flex:1; padding:26px 20px 40px; }
+    .toolbar{
+      display:flex; gap:10px; align-items:center; padding:10px 14px; background:var(--glass-bg);
+      border:1px solid var(--glass-border); border-radius:14px; box-shadow:var(--shadow-sm); backdrop-filter:blur(20px);
+    }
+    .muted{ color:var(--muted); }
+    .grid{
+      display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap:14px; margin-top:16px;
+    }
+    .card{
+      border:1px solid var(--line); border-radius:14px; background:linear-gradient(135deg, var(--glass-bg) 0%, var(--toolbar) 100%);
+      box-shadow:var(--shadow-sm); backdrop-filter:blur(16px); padding:14px; display:flex; flex-direction:column; gap:10px;
+      transition:var(--transition);
+    }
+    .card:hover{ border-color:var(--accent); box-shadow:0 0 18px var(--accent-glow), var(--shadow-md); transform:translateY(-2px); }
+    .card .row{ display:flex; align-items:center; gap:10px; }
+    .title-row{ display:flex; align-items:center; gap:10px; }
+    .name{ font-weight:700; font-size:15px; }
+    .badges{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .tag{
+      display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border:1px solid var(--line); border-radius:12px; background:var(--glass-bg);
+      font-size:11px; color:var(--muted);
+    }
+    .actions{ display:flex; gap:8px; margin-left:auto; flex-wrap:wrap; }
+    .search{
+      flex:1; display:flex; align-items:center; gap:8px; background:var(--glass-bg);
+      border:1px solid var(--line); border-radius:12px; padding:8px 12px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .search input{ flex:1; border:none; outline:none; background:transparent; color:var(--ink); font:inherit; }
+    footer{ text-align:center; padding:14px; color:var(--muted); font-size:12px; }
+
+    .theme-select{
+      padding:7px 10px; border:1px solid var(--line); border-radius:10px; background:var(--glass-bg); color:var(--ink);
+      box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .empty{
+      border:1px dashed var(--line); border-radius:14px; padding:22px; text-align:center; color:var(--muted);
+      background:var(--glass-bg); backdrop-filter:blur(12px);
+    }
+    .empty h3{ margin:6px 0; color:var(--ink); }
+    .hidden{ display:none !important; }
+  </style>
+</head>
+<body>
+  <div id="app" data-theme="light">
+    <header>
+      <strong class="pill">StoryStudio</strong>
+      <div class="spacer"></div>
+      <select id="themeSelect" class="theme-select" title="Theme">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+        <option value="green">Green</option>
+        <option value="amoled-black">AMOLED</option>
+      </select>
+      <button id="newBtn" class="btn primary">+ New Project</button>
+    </header>
+
+    <main>
+      <div class="toolbar">
+        <div class="search" style="max-width:520px; width:100%;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input id="searchInput" placeholder="Search projects by name..." />
+        </div>
+        <div class="badges">
+          <span class="tag"><span id="countLabel">0</span> projects</span>
+        </div>
+        <div class="spacer"></div>
+        <button id="exportBtn" class="btn">Export</button>
+        <button id="importBtn" class="btn">Import</button>
+        <input id="importFile" type="file" accept="application/json" class="hidden" />
+        <button id="openLastBtn" class="btn">Open Last</button>
+      </div>
+
+      <div id="grid" class="grid"></div>
+
+      <div id="emptyState" class="empty" style="display:none; margin-top:16px;">
+        <h3>No projects yet</h3>
+        <p class="muted">Create your first project to start writing.</p>
+        <div style="margin-top:10px;">
+          <button id="emptyCreateBtn" class="btn primary">Create Project</button>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      StoryStudio • Local Projects • Data stored in your browser
+    </footer>
+  </div>
+
+  <script>
+    (function(){
+      const KEYS = {
+        PROJECTS: 'storyStudio.projects.v1',
+        LAST_OPENED: 'storyStudio.lastOpenedId',
+        THEME: 'storyStudio.theme'
+      };
+
+      const app = document.getElementById('app');
+      const gridEl = document.getElementById('grid');
+      const emptyEl = document.getElementById('emptyState');
+      const searchInput = document.getElementById('searchInput');
+      const countLabel = document.getElementById('countLabel');
+      const newBtn = document.getElementById('newBtn');
+      const emptyCreateBtn = document.getElementById('emptyCreateBtn');
+      const openLastBtn = document.getElementById('openLastBtn');
+      const themeSelect = document.getElementById('themeSelect');
+      const exportBtn = document.getElementById('exportBtn');
+      const importBtn = document.getElementById('importBtn');
+      const importFile = document.getElementById('importFile');
+
+      let projects = loadProjects();
+      let searchTerm = '';
+
+      // Theme
+      initTheme();
+      themeSelect.addEventListener('change', () => {
+        const t = themeSelect.value;
+        app.setAttribute('data-theme', t);
+        try{ localStorage.setItem(KEYS.THEME, t); }catch(e){}
+      });
+
+      // Events
+      newBtn.addEventListener('click', handleCreateProject);
+      if (emptyCreateBtn) emptyCreateBtn.addEventListener('click', handleCreateProject);
+      openLastBtn.addEventListener('click', openLast);
+      searchInput.addEventListener('input', e => {
+        searchTerm = (e.target.value || '').toLowerCase().trim();
+        render();
+      });
+
+      exportBtn.addEventListener('click', () => {
+        try {
+          const data = JSON.stringify(projects, null, 2);
+          const blob = new Blob([data], { type: 'application/json' });
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'storystudio-projects.json';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(a.href);
+        } catch (e) {
+          alert('Failed to export projects.');
+        }
+      });
+
+      importBtn.addEventListener('click', () => importFile.click());
+      importFile.addEventListener('change', async (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        try {
+          const text = await file.text();
+          const arr = JSON.parse(text);
+          if (!Array.isArray(arr)) throw new Error('Invalid file');
+          // minimal validation
+          const cleaned = arr.filter(p => p && typeof p.id === 'string' && typeof p.name === 'string');
+          projects = cleaned.map(p => ({
+            id: p.id,
+            name: p.name,
+            createdAt: p.createdAt || new Date().toISOString(),
+            updatedAt: p.updatedAt || p.createdAt || new Date().toISOString(),
+            stats: p.stats || {}
+          }));
+          saveProjects(projects);
+          render();
+          alert('Projects imported.');
+        } catch (err) {
+          alert('Import failed: ' + err.message);
+        } finally {
+          importFile.value = '';
+        }
+      });
+
+      // Initial render
+      render();
+
+      function initTheme(){
+        let t = 'light';
+        try {
+          t = localStorage.getItem(KEYS.THEME) || 'light';
+        } catch(e) {}
+        themeSelect.value = t;
+        app.setAttribute('data-theme', t);
+      }
+
+      function loadProjects(){
+        try{
+          const raw = localStorage.getItem(KEYS.PROJECTS);
+          const arr = raw ? JSON.parse(raw) : [];
+          if (!Array.isArray(arr)) return [];
+          // sort by updatedAt desc
+          return arr.slice().sort((a,b)=> new Date(b.updatedAt||0) - new Date(a.updatedAt||0));
+        }catch(e){ return []; }
+      }
+
+      function saveProjects(arr){
+        try{
+          localStorage.setItem(KEYS.PROJECTS, JSON.stringify(arr));
+        }catch(e){}
+      }
+
+      function genId(){
+        return 'p_' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+      }
+
+      function fmtDate(iso){
+        if(!iso) return '';
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return '';
+        return d.toLocaleString();
+      }
+
+      function handleCreateProject(){
+        let base = 'Untitled Project';
+        let nextIndex = projects.reduce((max, p) => {
+          const m = (p.name || '').match(/^Untitled Project(?: (\d+))?$/);
+          if (m) {
+            const n = parseInt(m[1] || '1', 10);
+            return Math.max(max, n);
+          }
+          return max;
+        }, 0) + 1;
+        const suggested = projects.length ? base + ' ' + nextIndex : base;
+        const name = prompt('Project name:', suggested);
+        if (!name) return;
+        const proj = createProject(name.trim());
+        // Immediately open the new project
+        openProject(proj.id);
+      }
+
+      function createProject(name){
+        const now = new Date().toISOString();
+        const proj = {
+          id: genId(),
+          name: name || 'Untitled Project',
+          createdAt: now,
+          updatedAt: now,
+          stats: {}
+        };
+        projects.unshift(proj);
+        saveProjects(projects);
+        try { localStorage.setItem(KEYS.LAST_OPENED, proj.id); } catch(e){}
+        render();
+        return proj;
+      }
+
+      function openProject(id){
+        try { localStorage.setItem(KEYS.LAST_OPENED, id); } catch(e){}
+        const url = 'Story%20Studio%20alpha.html?projectId=' + encodeURIComponent(id);
+        location.href = url;
+      }
+
+      function renameProject(id){
+        const p = projects.find(x => x.id === id);
+        if(!p) return;
+        const name = prompt('Rename project:', p.name || '');
+        if(!name) return;
+        p.name = name.trim() || p.name;
+        p.updatedAt = new Date().toISOString();
+        saveProjects(projects);
+        render();
+      }
+
+      function deleteProject(id){
+        const p = projects.find(x => x.id === id);
+        if(!p) return;
+        if(!confirm('Delete "' + (p.name || 'Untitled') + '"? This cannot be undone.')) return;
+        projects = projects.filter(x => x.id !== id);
+        saveProjects(projects);
+        try {
+          const last = localStorage.getItem(KEYS.LAST_OPENED);
+          if (last === id) localStorage.removeItem(KEYS.LAST_OPENED);
+        } catch(e){}
+        render();
+      }
+
+      function openLast(){
+        let id = null;
+        try { id = localStorage.getItem(KEYS.LAST_OPENED); }catch(e){}
+        if (!id) {
+          if (projects.length === 0) {
+            alert('No projects to open.');
+            return;
+          }
+          id = projects[0].id;
+        }
+        const exists = projects.some(p => p.id === id);
+        if (!exists) {
+          alert('Last project not found.');
+          return;
+        }
+        openProject(id);
+      }
+
+      function render(){
+        const total = projects.length;
+        countLabel.textContent = String(total);
+        emptyEl.style.display = total === 0 ? '' : 'none';
+        gridEl.innerHTML = '';
+
+        let list = projects.slice().sort((a,b)=> new Date(b.updatedAt||0) - new Date(a.updatedAt||0));
+        if (searchTerm) {
+          list = list.filter(p => (p.name || '').toLowerCase().includes(searchTerm));
+        }
+
+        list.forEach(p => {
+          const card = document.createElement('div');
+          card.className = 'card';
+
+          const titleRow = document.createElement('div');
+          titleRow.className = 'title-row';
+
+          const nameEl = document.createElement('div');
+          nameEl.className = 'name';
+          nameEl.textContent = p.name || 'Untitled';
+
+          const badges = document.createElement('div');
+          badges.className = 'badges';
+          const created = document.createElement('span');
+          created.className = 'tag';
+          created.textContent = 'Created ' + (fmtDate(p.createdAt) || '-');
+          const updated = document.createElement('span');
+          updated.className = 'tag';
+          updated.textContent = 'Updated ' + (fmtDate(p.updatedAt) || '-');
+          badges.appendChild(created);
+          badges.appendChild(updated);
+
+          const actions = document.createElement('div');
+          actions.className = 'actions';
+
+          const openBtn = document.createElement('button');
+          openBtn.className = 'btn sm';
+          openBtn.textContent = 'Open';
+          openBtn.addEventListener('click', () => openProject(p.id));
+
+          const renameBtn = document.createElement('button');
+          renameBtn.className = 'btn sm';
+          renameBtn.textContent = 'Rename';
+          renameBtn.addEventListener('click', () => renameProject(p.id));
+
+          const delBtn = document.createElement('button');
+          delBtn.className = 'btn sm danger';
+          delBtn.textContent = 'Delete';
+          delBtn.addEventListener('click', () => deleteProject(p.id));
+
+          actions.appendChild(openBtn);
+          actions.appendChild(renameBtn);
+          actions.appendChild(delBtn);
+
+          titleRow.appendChild(nameEl);
+          titleRow.appendChild(badges);
+          titleRow.appendChild(actions);
+
+          // Make the whole card clickable to open (except button clicks)
+          card.addEventListener('click', (ev) => {
+            const tag = (ev.target && ev.target.tagName || '').toLowerCase();
+            if (tag === 'button' || tag === 'svg' || tag === 'path' || tag === 'input') return;
+            openProject(p.id);
+          });
+
+          card.appendChild(titleRow);
+          gridEl.appendChild(card);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>]

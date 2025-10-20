@@ -1,0 +1,4759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Story Studio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg:#f0f4f8;
+      --glass-bg:rgba(255, 255, 255, 0.75);
+      --glass-border:rgba(255, 255, 255, 0.9);
+      --paper:#ffffff;
+      --ink:#1a1a2e;
+      --muted:#64748b;
+      --accent:#0066cc;
+      --accent-2:#0052a3;
+      --accent-glow:rgba(0, 102, 204, 0.25);
+      --line:rgba(203, 213, 225, 0.7);
+      --toolbar:rgba(248, 250, 252, 0.9);
+      --chip:#e6f3ff;
+      --danger:#dc2626;
+      --success:#16a34a;
+      --shadow-sm:0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md:0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.04);
+      --shadow-lg:0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+      --glow:0 0 24px rgba(0, 102, 204, 0.3);
+      --transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    [data-theme="dark"]{
+      --bg:#0f172a;
+      --glass-bg:rgba(30, 41, 59, 0.8);
+      --glass-border:rgba(71, 85, 105, 0.7);
+      --paper:#1e293b;
+      --ink:#f1f5f9;
+      --muted:#94a3b8;
+      --accent:#3b82f6;
+      --accent-2:#2563eb;
+      --accent-glow:rgba(59, 130, 246, 0.2);
+      --line:rgba(71, 85, 105, 0.6);
+      --toolbar:rgba(30, 41, 59, 0.9);
+      --chip:#1e3a8a;
+      --danger:#ef4444;
+      --success:#22c55e;
+      --shadow-sm:0 2px 4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+      --shadow-md:0 4px 8px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+      --shadow-lg:0 12px 24px rgba(0, 0, 0, 0.6), 0 6px 12px rgba(0, 0, 0, 0.4);
+      --glow:0 0 32px rgba(59, 130, 246, 0.25);
+      --transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    [data-theme="green"]{
+      --bg:#f0fdf4;
+      --glass-bg:rgba(240, 253, 244, 0.8);
+      --glass-border:rgba(220, 252, 231, 0.9);
+      --paper:#ffffff;
+      --ink:#14532d;
+      --muted:#64748b;
+      --accent:#16a34a;
+      --accent-2:#15803d;
+      --accent-glow:rgba(34, 197, 94, 0.2);
+      --line:rgba(187, 247, 208, 0.7);
+      --toolbar:rgba(240, 253, 244, 0.9);
+      --chip:#dcfce7;
+      --danger:#dc2626;
+      --success:#16a34a;
+      --shadow-sm:0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md:0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.04);
+      --shadow-lg:0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+      --glow:0 0 28px rgba(34, 197, 94, 0.25);
+      --transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    [data-theme="amoled-black"]{
+      --bg:#000000;
+      --glass-bg:rgba(10, 10, 10, 0.75);
+      --glass-border:rgba(40, 40, 40, 0.7);
+      --paper:#111111;
+      --ink:#ffffff;
+      --muted:#a0a0a0;
+      --accent:#007bff; /* A bright blue for accent */
+      --accent-2:#0056b3;
+      --accent-glow:rgba(0, 123, 255, 0.25);
+      --line:rgba(50, 50, 50, 0.6);
+      --toolbar:rgba(15, 15, 15, 0.9);
+      --chip:#1a1a1a;
+      --danger:#ff4d4d;
+      --success:#28a745;
+      --shadow-sm:0 2px 4px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.4);
+      --shadow-md:0 4px 8px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.5);
+      --shadow-lg:0 12px 24px rgba(0, 0, 0, 0.7), 0 6px 12px rgba(0, 0, 0, 0.6);
+      --glow:0 0 32px rgba(0, 123, 255, 0.3);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; margin:0;}
+    body{
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(0, 102, 204, 0.12), transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(0, 82, 163, 0.08), transparent 50%),
+        linear-gradient(135deg, var(--bg) 0%, #e2e8f0 50%, #cbd5e1 100%);
+      background-attachment: fixed;
+      color:var(--ink);
+      font:14px/1.5 "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial;
+      transition:var(--transition);
+    }
+    [data-theme="dark"] body{
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(59, 130, 246, 0.1), transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(37, 99, 235, 0.06), transparent 50%),
+        linear-gradient(135deg, var(--bg) 0%, #1e293b 50%, #334155 100%);
+    }
+    [data-theme="green"] body{
+      background:
+        radial-gradient(ellipse at 20% 30%, rgba(34, 197, 94, 0.12), transparent 50%),
+        radial-gradient(ellipse at 80% 70%, rgba(22, 163, 74, 0.08), transparent 50%),
+        linear-gradient(135deg, var(--bg) 0%, #dcfce7 50%, #bbf7d0 100%);
+    }
+    [data-theme="amoled-black"] body{
+      background: #000000;
+    }
+    [data-theme="amoled-black"] .chapter-item,
+    [data-theme="amoled-black"] .chapter-header input {
+      color: #ffffff;
+    }
+    #app{
+      display:flex;
+      flex-direction:column;
+      height:100%;
+      width:100%;
+      overflow:hidden;
+    }
+    
+    /* Aero Glass Header */
+    header{
+      display:flex; 
+      align-items:center; 
+      gap:12px;
+      padding:12px 20px;
+      background:
+        linear-gradient(180deg, var(--glass-bg) 0%, var(--toolbar) 100%);
+      border-bottom:1px solid var(--glass-border);
+      box-shadow:var(--shadow-md);
+      backdrop-filter:blur(24px) saturate(180%);
+      position:sticky; 
+      top:0; 
+      z-index:10;
+      transition:var(--transition);
+    }
+    header .title{
+      display:flex; align-items:center; gap:10px; flex:1;
+    }
+    header input#docTitle{
+      font-size:16px; 
+      font-weight:600;
+      border:1px solid var(--line); 
+      outline:none; 
+      background:var(--glass-bg); 
+      color:var(--ink);
+      padding:8px 12px; 
+      border-radius:12px;
+      width: min(420px, 50vw);
+      box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);
+      backdrop-filter:blur(10px);
+      transition:var(--transition);
+    }
+    header input#docTitle:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px var(--accent-glow), inset 0 1px 3px rgba(0,0,0,0.05);
+      transform:translateY(-1px);
+    }
+    header .chip{
+      background:linear-gradient(135deg, var(--chip) 0%, var(--glass-bg) 100%); 
+      color:var(--accent); 
+      padding:5px 12px; 
+      border-radius:12px; 
+      font-size:11px;
+      font-weight:600;
+      border:1px solid var(--accent);
+      box-shadow:var(--shadow-sm);
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+      transition:var(--transition);
+    }
+    header .spacer{flex:1}
+    
+    /* Modern Buttons */
+    .btn,
+    .inline-btn {
+      border:1px solid var(--line);
+      background-color: var(--glass-bg);
+      color:var(--ink);
+      padding:8px 18px;
+      border-radius:999px;
+      cursor:pointer;
+      transition:var(--transition);
+      font-weight:600;
+      font-size:13px;
+      box-shadow: var(--shadow-sm);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      min-height:36px;
+      appearance:none;
+      -webkit-appearance:none;
+      position:relative;
+      overflow:hidden;
+    }
+    [data-theme="dark"] .btn,
+    [data-theme="dark"] .inline-btn{
+      background-color: rgba(40, 50, 70, 0.9);
+    }
+    .btn:hover,
+    .inline-btn:hover{
+      border-color:var(--accent);
+      background-color: var(--accent-glow);
+      transform:translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .btn:active,
+    .inline-btn:active{
+      transform:translateY(0);
+      box-shadow:inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .btn:disabled,
+    .inline-btn:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+      transform:none;
+    }
+    .btn:focus-visible,
+    .inline-btn:focus-visible{
+      outline:none;
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px var(--accent-glow), var(--shadow-md);
+    }
+    .btn.primary{
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      border-color:transparent;
+      color:white;
+      box-shadow:var(--glow), var(--shadow-md);
+    }
+    .btn.primary:hover{
+      filter: brightness(1.1);
+      box-shadow:var(--glow), 0 0 24px var(--accent-glow), var(--shadow-md);
+      border-color: transparent;
+      transform:translateY(-2px);
+    }
+    .btn.ghost{
+      background:transparent;
+      border-color:transparent;
+      box-shadow:none;
+    }
+    .btn.ghost:hover{
+      background:var(--glass-bg);
+      border-color:var(--line);
+    }
+    .btn.icon{
+      padding:7px; 
+      width:34px; 
+      height:34px; 
+      display:grid; 
+      place-items:center;
+    }
+    .btn.danger{
+      background:transparent; 
+      border-color:var(--danger); 
+      color:var(--danger);
+    }
+    .btn.danger:hover{
+      background:var(--danger);
+      color:white;
+      box-shadow:0 0 20px rgba(220, 38, 38, 0.4);
+      transform:translateY(-2px);
+    }
+    .btn.success{
+      background:transparent; 
+      border-color:var(--success); 
+      color:var(--success);
+    }
+    .btn.success:hover{
+      background:var(--success);
+      color:white;
+      box-shadow:0 0 20px rgba(34, 197, 94, 0.4);
+      transform:translateY(-2px);
+    }
+    .rightbar .btn {
+      padding: 5px 14px;
+      font-size: 12px;
+      min-height: 30px;
+    }
+    select, input[type="number"]{
+      padding:7px 10px; 
+      border:1px solid var(--line); 
+      border-radius:6px; 
+      background:var(--glass-bg); 
+      color:var(--ink);
+      backdrop-filter:blur(10px);
+      box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);
+      transition:all 0.2s ease;
+    }
+    select:focus, input[type="number"]:focus{
+      outline:none;
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px var(--accent-glow), inset 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    /* AI Menu with Glass Effect */
+    .topbar{
+      display:flex; gap:8px; align-items:center;
+      position:relative;
+    }
+    .ai-menu{
+      position:absolute;
+      top:calc(100% + 12px);
+      left:0;
+      width:300px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      padding:16px;
+      background:var(--glass-bg);
+      border:1px solid var(--glass-border);
+      border-radius:12px;
+      box-shadow:var(--shadow-lg);
+      backdrop-filter:blur(30px) saturate(180%);
+      z-index:30;
+    }
+    .ai-menu .menu-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .ai-menu .menu-header strong{
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      color:var(--accent);
+    }
+    .ai-menu .menu-body{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+    .menu-field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      font-size:12px;
+    }
+    .menu-field select,
+    .menu-field input{
+      width:100%;
+    }
+    
+    /* Glass Toolbar */
+    .toolbar{
+      position:sticky; 
+      top:62px; 
+      z-index:9;
+      display:flex; 
+      gap:10px; 
+      align-items:center; 
+      padding:10px 20px;
+      background:var(--toolbar);
+      backdrop-filter:blur(24px) saturate(180%);
+      border-bottom:1px solid var(--line);
+      box-shadow:var(--shadow-sm);
+      transition:var(--transition);
+    }
+    .toolbar .group{
+      display:flex; 
+      gap:6px; 
+      padding-right:12px; 
+      border-right:1px solid var(--line);
+    }
+    .toolbar .group:last-child{border-right:none}
+    .toolbar .btn.active{
+      background:linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); 
+      color:#fff; 
+      border-color:transparent;
+      box-shadow:var(--glow);
+      transform:translateY(-1px);
+    }
+    
+    /* Layout */
+    .layout{
+      display:grid; 
+      grid-template-columns: 300px 4px 1fr 4px 380px;
+      gap:0; 
+      height:calc(100% - 120px);
+    }
+    .resizer {
+      background: var(--line);
+      cursor: ew-resize;
+      transition: background 0.2s ease;
+      z-index: 8;
+    }
+    .resizer:hover {
+      background: var(--accent);
+    }
+    
+    /* Glass Sidebars */
+    aside{
+      border-right:1px solid var(--line); 
+      overflow:auto; 
+      background:var(--glass-bg);
+      backdrop-filter:blur(24px) saturate(150%);
+      box-shadow:var(--shadow-sm);
+      transition:var(--transition);
+    }
+    .rightbar{
+      border-left:1px solid var(--line); 
+      border-right:none;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+      padding:0;
+    }
+
+    .tab-container{
+      display:flex;
+      flex-direction:column;
+      height:100%;
+    }
+    .tab-buttons{
+      display:flex;
+      gap:8px;
+      padding:12px 14px;
+      background:var(--toolbar);
+      border-bottom:1px solid var(--line);
+      backdrop-filter:blur(20px) saturate(180%);
+      position:sticky;
+      top:0;
+      z-index:5;
+    }
+    .tab-button{
+      flex:1;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:8px 12px;
+      font-weight:600;
+      font-size:13px;
+      background:linear-gradient(180deg, var(--glass-bg) 0%, var(--toolbar) 100%);
+      color:var(--ink);
+      cursor:pointer;
+      transition:var(--transition);
+      box-shadow:var(--shadow-sm);
+    }
+    .tab-button:hover{
+      border-color:var(--accent);
+      box-shadow:0 0 16px var(--accent-glow), var(--shadow-md);
+      transform:translateY(-1px);
+    }
+    .tab-button.active{
+      background:linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      color:#fff;
+      border-color:transparent;
+      box-shadow:var(--glow);
+      transform:translateY(-1px);
+    }
+    .tab-content{
+      display:none;
+      overflow:auto;
+      flex:1;
+    }
+    .tab-content.active{
+      display:block;
+    }
+    .tab-content[data-tab="guides"]{
+      padding-bottom:32px;
+    }
+    .tab-content[data-tab="roleplay"]{
+      padding:18px 18px 24px;
+    }
+    .tab-content[data-tab="roleplay"].active{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
+    .roleplay-section{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+    .roleplay-header h3{
+      margin:0;
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:1.2px;
+      text-transform:uppercase;
+      color:var(--accent);
+    }
+    .roleplay-header p{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .roleplay-panel{
+      border:1px solid var(--glass-border);
+      border-radius:16px;
+      padding:18px;
+      background:var(--glass-bg);
+      box-shadow:var(--shadow-md);
+      backdrop-filter:blur(20px);
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      flex:1;
+      min-height:360px;
+    }
+    .roleplay-panel .row{
+      align-items:flex-start;
+    }
+    .roleplay-panel .chat{
+      flex:1;
+      min-height:280px;
+    }
+    .roleplay-header h3 {
+        margin-bottom: 4px;
+    }
+    .roleplay-settings {
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 14px 18px;
+        background: var(--glass-bg);
+        box-shadow: var(--shadow-md);
+        backdrop-filter: blur(20px);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    .setting-group h4 {
+        margin: 0 0 8px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--muted);
+    }
+    .toggles {
+        gap: 16px;
+    }
+    .toggle-switch {
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+        font-size: 13px;
+        color: var(--ink);
+    }
+    .toggle-switch .label-text {
+        line-height: 1;
+    }
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .toggle-switch .slider {
+        position: relative;
+        display: block;
+        width: 38px;
+        height: 20px;
+        background-color: var(--line);
+        border-radius: 10px;
+        transition: background-color 0.2s ease;
+        margin-right: 10px;
+    }
+    .toggle-switch .slider::before {
+        content: '';
+        position: absolute;
+        left: 3px;
+        top: 3px;
+        width: 14px;
+        height: 14px;
+        background-color: white;
+        border-radius: 50%;
+        transition: transform 0.2s ease;
+    }
+    .toggle-switch input:checked + .slider {
+        background-color: var(--accent);
+    }
+    .toggle-switch input:checked + .slider::before {
+        transform: translateX(18px);
+    }
+    .chat-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+    .chat {
+        flex: 1;
+        min-height: 480px;
+    }
+    .chat-actions {
+        display: flex;
+        gap: 8px;
+        padding: 10px 0 0;
+    }
+    #chatSendBtn {
+        padding: 7px;
+        width: 36px;
+        height: 36px;
+        display: grid;
+        place-items: center;
+    }
+    #chatSendBtn svg {
+        width: 18px;
+        height: 18px;
+    }
+    .section{
+      padding:16px 14px; 
+      border-bottom:1px solid var(--line);
+    }
+    .section h3{
+      margin:0 0 12px; 
+      font-size:11px; 
+      font-weight:700;
+      letter-spacing:1.2px; 
+      color:var(--accent); 
+      text-transform:uppercase;
+    }
+    
+    /* Chapter Items with Glow */
+    .chapters-list{
+      display:flex; 
+      flex-direction:column; 
+      gap:8px;
+    }
+    .chapter-item{
+      display:flex; 
+      align-items:center; 
+      gap:10px; 
+      padding:10px 12px; 
+      border:1px solid var(--line); 
+      border-radius:12px; 
+      cursor:pointer; 
+      background:linear-gradient(135deg, var(--glass-bg) 0%, var(--toolbar) 100%);
+      backdrop-filter:blur(12px);
+      transition:var(--transition);
+      box-shadow:var(--shadow-sm);
+    }
+    .chapter-item:hover{
+      border-color:var(--accent);
+      box-shadow:0 0 16px var(--accent-glow), var(--shadow-md);
+      transform:translateX(4px);
+    }
+    .chapter-item.active{
+      border-color:var(--accent); 
+      background:linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      color:white;
+      box-shadow:var(--glow), var(--shadow-md);
+    }
+    .chapter-item.active .muted{
+      color:rgba(255,255,255,0.8);
+    }
+    .chapter-item .mini-actions{
+      margin-left:auto; 
+      display:flex; 
+      gap:4px; 
+      opacity:.9;
+    }
+    .muted{color:var(--muted)}
+    
+    /* Editor with Depth */
+    .editor-wrap{
+      overflow:auto; 
+      padding:28px 0 140px; 
+      background:
+        radial-gradient(1400px 600px at 50% -400px, var(--accent-glow), transparent) no-repeat,
+        var(--bg);
+    }
+    .page{
+      width:min(820px, 94%); 
+      margin:0 auto;
+      background:var(--glass-bg); 
+      border:1px solid var(--glass-border); 
+      border-radius:16px; 
+      padding:32px 64px;
+      box-shadow:var(--shadow-lg),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+      backdrop-filter:blur(32px) saturate(150%);
+      min-height:calc(100% - 32px);
+      transition:var(--transition);
+    }
+    .chapter-header{
+      display:flex; 
+      gap:10px; 
+      align-items:center; 
+      margin-bottom:16px;
+    }
+    .chapter-header input{
+      font-size:20px; 
+      font-weight:700; 
+      border:none; 
+      outline:none; 
+      background:transparent; 
+      color:var(--ink);
+      padding:8px 10px; 
+      border-radius:8px; 
+      min-width:140px; 
+      flex:1;
+    }
+    .chapter-header input:focus{
+      background:rgba(0, 120, 212, 0.05);
+    }
+    #editor{
+      outline:none; 
+      min-height:65vh;
+      font-size:16px; 
+      line-height:1.75; 
+      color:var(--ink);
+    }
+    #editor p{margin:0 0 14px}
+    #editor h1, #editor h2, #editor h3{
+      margin:18px 0 10px;
+      background:linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    #editor blockquote{
+      border-left:4px solid var(--accent); 
+      padding-left:16px; 
+      color:var(--muted);
+      margin:14px 0; 
+      font-style:italic;
+      background:rgba(0, 120, 212, 0.03);
+      padding:12px 16px;
+      border-radius:0 8px 8px 0;
+    }
+    #editor .ai-suggestion{
+      background:var(--accent-glow);
+      border-left:4px solid var(--accent);
+      padding:12px 16px; 
+      border-radius:0 8px 8px 0;
+      box-shadow:var(--shadow-sm);
+    }
+    
+    /* Panels */
+    .panel{
+      padding:14px; 
+      display:flex; 
+      flex-direction:column; 
+      gap:14px;
+    }
+    textarea, .multiline{
+      width:100%; 
+      min-height:120px; 
+      padding:12px; 
+      border:1px solid var(--line); 
+      border-radius:12px; 
+      background:var(--glass-bg); 
+      color:var(--ink); 
+      resize:vertical;
+      font:inherit;
+      backdrop-filter:blur(10px);
+      box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);
+      transition:all 0.2s ease;
+    }
+    textarea:focus, .multiline:focus{
+      outline:none;
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px var(--accent-glow), inset 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .small{font-size:12px}
+    .row{
+      display:flex; 
+      gap:8px; 
+      align-items:center; 
+      flex-wrap:wrap;
+    }
+    textarea + .row,
+    .multiline + .row { margin-top: 4px; }
+    aside .section > .row,
+    .rightbar .section > .row {
+      margin-top: 4px;
+    }
+    .row.stretch > *{flex:1}
+    
+    /* Tags with Glass */
+    .tag{
+      display:inline-flex; 
+      align-items:center; 
+      gap:6px; 
+      padding:5px 10px; 
+      border:1px solid var(--line); 
+      border-radius:16px; 
+      background:var(--glass-bg);
+      backdrop-filter:blur(10px);
+      box-shadow:var(--shadow-sm);
+      transition:all 0.2s ease;
+    }
+    .tag:hover{
+      border-color:var(--accent);
+      box-shadow:0 0 8px var(--accent-glow);
+    }
+    
+    /* Character Cards with Depth */
+    .character-card{
+      border:1px solid var(--line); 
+      border-radius:12px; 
+      padding:12px; 
+      display:flex; 
+      flex-direction:column; 
+      gap:8px; 
+      background:linear-gradient(135deg, var(--glass-bg) 0%, var(--toolbar) 100%);
+      backdrop-filter:blur(12px);
+      box-shadow:var(--shadow-sm);
+      transition:var(--transition);
+    }
+    .character-card:hover{
+      box-shadow:0 0 16px var(--accent-glow), var(--shadow-md);
+      transform:translateY(-2px);
+    }
+    .character-card .row{justify-content:space-between}
+    .character-card .name{
+      font-weight:700;
+      font-size:15px;
+    }
+    .pill{
+      padding:3px 10px; 
+      border-radius:12px; 
+      background:linear-gradient(135deg, var(--chip) 0%, rgba(227, 242, 253, 0.6) 100%); 
+      color:var(--accent); 
+      font-size:11px;
+      font-weight:600;
+      border:1px solid rgba(0, 120, 212, 0.2);
+      box-shadow:var(--shadow-sm);
+    }
+    .hr{
+      height:1px; 
+      background:linear-gradient(90deg, transparent, var(--line), transparent); 
+      margin:10px 0;
+    }
+    .notice{
+      font-size:12px; 
+      color:var(--muted);
+      font-style:italic;
+    }
+    
+    /* Status with Glow */
+    .status{
+      display:flex; 
+      gap:8px; 
+      align-items:center; 
+      color:var(--muted); 
+      font-size:12px;
+      font-weight:600;
+    }
+    .status .dot{
+      width:9px; 
+      height:9px; 
+      border-radius:50%; 
+      background:var(--muted);
+      box-shadow:0 0 4px rgba(0,0,0,0.2);
+    }
+    .status.busy .dot{
+      background:var(--accent);
+      box-shadow:0 0 10px var(--accent-glow);
+      animation:pulse 1.5s ease-in-out infinite;
+    }
+    .status.ok .dot{
+      background:var(--success);
+      box-shadow:0 0 8px rgba(46, 125, 50, 0.4);
+    }
+    .status.err .dot{
+      background:var(--danger);
+      box-shadow:0 0 8px rgba(211, 47, 47, 0.4);
+    }
+    @keyframes pulse{
+      0%, 100%{opacity:1; transform:scale(1)}
+      50%{opacity:0.7; transform:scale(1.1)}
+    }
+    
+    /* Chat with Glass */
+    .chat{
+      border:1px solid var(--glass-border);
+      border-radius:18px;
+      display:flex;
+      flex-direction:column;
+      background:var(--glass-bg);
+      backdrop-filter:blur(24px);
+      box-shadow:var(--shadow-md);
+      min-height:480px;
+      position: relative;
+      transition:var(--transition);
+    }
+    #chatClearBtn {
+      position: absolute;
+      top: 8px;
+      right: 14px;
+      z-index: 5;
+      padding: 6px;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+    }
+    #chatClearBtn svg {
+      width: 16px;
+      height: 16px;
+    }
+    .chat-log{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      padding:48px 20px 18px;
+      overflow:auto;
+      background:linear-gradient(180deg, rgba(0, 120, 212, 0.05) 0%, transparent 60%);
+    }
+    .chat-msg{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      max-width:82%;
+    }
+    .chat-msg.user{
+      margin-left:auto;
+      align-items:flex-end;
+    }
+    .chat-msg.assistant{
+      margin-right:auto;
+      align-items:flex-start;
+    }
+    .chat-bubble{
+      padding:12px 16px;
+      border-radius:18px 18px 6px 18px;
+      background:var(--glass-bg);
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-sm);
+      backdrop-filter:blur(12px);
+    }
+    .chat-msg.assistant .chat-bubble{
+      border-color:var(--accent);
+      background:linear-gradient(135deg, rgba(0, 120, 212, 0.12), rgba(0, 120, 212, 0.04));
+    }
+    [data-theme="dark"] .chat-msg.assistant .chat-bubble{
+      color: #ffffff;
+    }
+    [data-theme="amoled-black"] .chat-msg.assistant .chat-bubble{
+      color: #ffffff;
+    }
+    [data-theme="amoled-black"] .chat-msg.user .chat-bubble{
+      color: #ffffff;
+    }
+    .chat-msg.user .chat-bubble{
+      background:linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      color:#fff;
+      border-color:transparent;
+      box-shadow:var(--glow);
+      border-radius:18px 18px 18px 6px;
+    }
+    .chat-msg.user .chat-meta{
+      color:rgba(255,255,255,0.8);
+    }
+    .chat-text{
+      font-size:13.5px;
+      line-height:1.5;
+    }
+    .chat-text code{
+      background:rgba(0, 0, 0, 0.08);
+      padding:2px 6px;
+      border-radius:6px;
+      font-size:12px;
+    }
+    [data-theme="dark"] .chat-text code{
+      background:#fcfcfc29;
+    }
+    .chat-msg.user .chat-text code{
+      background:rgba(255, 255, 255, 0.22);
+      color:#fff;
+    }
+
+    .chat-meta{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:0.6px;
+      color:var(--muted);
+    }
+    .chat-empty{
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+      padding:40px 0;
+    }
+    .chat-controls{
+      display:flex; 
+      gap:8px; 
+      padding:12px 14px; 
+      border-top:1px solid var(--line); 
+      background:var(--glass-bg);
+      backdrop-filter:blur(12px);
+    }
+    .chat-controls input{
+      flex:1; 
+      padding:8px 12px; 
+      border:1px solid var(--line); 
+      border-radius:12px; 
+      background:rgba(255,255,255,0.8); 
+      color:var(--ink);
+      backdrop-filter:blur(10px);
+      transition:all 0.2s ease;
+    }
+    .chat-controls input:focus{
+      outline:none;
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px var(--accent-glow);
+    }
+    
+    .flex{display:flex; gap:8px; align-items:center}
+    .grow{flex:1}
+    .right{margin-left:auto}
+    .ghost-link{
+      background:none; 
+      border:none; 
+      color:var(--accent); 
+      cursor:pointer; 
+      text-decoration:underline; 
+      padding:0; 
+      font:inherit;
+      transition:all 0.2s ease;
+    }
+    .ghost-link:hover{
+      color:var(--accent-2);
+      text-shadow:0 0 8px var(--accent-glow);
+    }
+    .kbd{
+      background:var(--glass-bg); 
+      border:1px solid var(--line); 
+      padding:2px 8px; 
+      border-radius:6px; 
+      font-size:11px;
+      box-shadow:inset 0 -2px 0 rgba(0,0,0,0.1);
+    }
+    
+    /* Floating Button with Glow */
+    .floating{
+      position:fixed; 
+      left:20px; 
+      bottom:20px; 
+      display:flex; 
+      gap:10px; 
+      align-items:center; 
+      z-index:999;
+      background:var(--glass-bg); 
+      border:1px solid var(--glass-border); 
+      padding:10px 14px; 
+      border-radius:24px; 
+      box-shadow:var(--shadow-lg);
+      backdrop-filter:blur(32px) saturate(180%);
+      transition:var(--transition);
+    }
+    .hidden{display:none !important}
+    
+    /* Modal with Glass */
+    .modal-backdrop{
+      position:fixed; 
+      inset:0; 
+      background:rgba(0,0,0,.5); 
+      backdrop-filter:blur(12px);
+      display:grid; 
+      place-items:center; 
+      z-index:1000;
+      transition:var(--transition);
+    }
+    .modal{
+      width:min(580px, 94vw); 
+      background:var(--glass-bg); 
+      border:1px solid var(--glass-border); 
+      border-radius:16px; 
+      padding:20px; 
+      box-shadow:var(--shadow-lg),
+        inset 0 1px 0 rgba(255,255,255,0.3);
+      backdrop-filter:blur(40px) saturate(180%);
+      transition:var(--transition);
+    }
+    .modal h2{
+      margin:.2rem 0 0.6rem;
+      background:linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
+    .modal .row{justify-content:space-between}
+    .divider{
+      height:1px; 
+      background:linear-gradient(90deg, transparent, var(--line), transparent); 
+      margin:12px -20px;
+    }
+    .tooltip{
+      font-size:12px; 
+      color:var(--muted);
+      font-style:italic;
+    }
+    .leftbar-footer{
+      position:sticky; 
+      bottom:0; 
+      background:var(--glass-bg); 
+      padding:12px 14px; 
+      border-top:1px solid var(--line);
+      backdrop-filter:blur(20px);
+      box-shadow:0 -2px 10px rgba(0,0,0,0.05);
+    }
+    
+    /* Smooth Scrollbars */
+    ::-webkit-scrollbar{width:10px; height:10px}
+    ::-webkit-scrollbar-track{background:rgba(0,0,0,0.03)}
+    ::-webkit-scrollbar-thumb{
+      background:linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-radius:5px;
+      border:2px solid transparent;
+      background-clip:content-box;
+    }
+    ::-webkit-scrollbar-thumb:hover{
+      background:linear-gradient(135deg, var(--accent-2), var(--accent));
+      background-clip:content-box;
+    }
+
+    /* Export Modal Enhancements */
+    .export-options-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .export-option {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--glass-bg);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+    }
+    .export-option:hover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+    .export-option input[type="radio"] {
+      margin-right: 12px;
+      appearance: none;
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--muted);
+      border-radius: 50%;
+      outline: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .export-option input[type="radio"]:checked {
+      border-color: var(--accent);
+      background-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--paper) inset;
+    }
+    .export-option input[type="radio"]:focus-visible {
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+    .export-option span {
+      flex: 1;
+      line-height: 1.3;
+    }
+
+    /* Context Modal */
+    .chapters-context-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .chapter-context-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+    }
+    .chapter-context-item .chapter-title {
+      font-weight: 600;
+    }
+    .chapter-context-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .chapter-context-actions .summary-display {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chapter-context-actions .summary-text {
+      background: var(--chip);
+      border-color: transparent;
+      max-width: 250px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: help;
+    }
+
+    /* Enhanced Theme Selector */
+    .theme-selector-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .theme-selector-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      min-width: 120px;
+      justify-content: space-between;
+    }
+
+    .theme-selector-btn .theme-icon {
+      font-size: 16px;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+    }
+
+    .theme-selector-btn .theme-dropdown-arrow {
+      transition: transform 0.2s ease;
+    }
+
+    .theme-selector-btn:hover .theme-dropdown-arrow {
+      transform: translateY(1px);
+    }
+
+    .theme-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 320px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(30px) saturate(180%);
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    .theme-menu.hidden {
+      display: none;
+    }
+
+    .theme-menu-header {
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, var(--glass-bg) 0%, var(--toolbar) 100%);
+    }
+
+    .theme-menu-header strong {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .theme-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 12px;
+    }
+
+    .theme-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--glass-bg);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+      backdrop-filter: blur(10px);
+    }
+
+    .theme-option:hover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .theme-option.active {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      color: white;
+      box-shadow: var(--glow);
+    }
+
+    .theme-preview {
+      width: 48px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .theme-preview.light-theme {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+    }
+
+    .theme-preview.dark-theme {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+    }
+
+    .theme-preview.green-theme {
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #bbf7d0 100%);
+    }
+
+    .preview-header {
+      height: 8px;
+      background: var(--accent);
+      opacity: 0.8;
+    }
+
+    .preview-content {
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .preview-line {
+      height: 2px;
+      background: var(--muted);
+      opacity: 0.6;
+      border-radius: 1px;
+    }
+
+    .preview-line.short {
+      width: 60%;
+    }
+
+    .theme-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .theme-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--ink);
+    }
+
+    .theme-desc {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .theme-option .theme-icon {
+      font-size: 20px;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+    }
+
+    .theme-option.active .theme-name,
+    .theme-option.active .theme-desc {
+      color: white;
+    }
+
+    /* Animation for theme menu */
+    @keyframes themeMenuSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .theme-menu:not(.hidden) {
+      animation: themeMenuSlideIn 0.2s ease-out;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" data-theme="light">
+    <header>
+      <div class="title">
+        <a class="btn ghost" id="homeLink" href="index.html" title="Back to Projects">← Projects</a>
+        <strong class="pill">StoryStudio</strong>
+        <input id="docTitle" placeholder="Untitled story" />
+        <span id="saveStatus" class="chip">Saved</span>
+      </div>
+      <div class="topbar">
+        <button class="btn" id="aiMenuBtn" title="Configure AI settings" aria-haspopup="true" aria-expanded="false">AI Menu</button>
+        <div class="ai-menu hidden" id="aiMenu" role="dialog" aria-label="AI settings">
+          <div class="menu-header">
+            <strong>AI Settings</strong>
+            <button class="btn icon ghost" id="aiMenuClose" title="Close AI menu" aria-label="Close AI menu">×</button>
+          </div>
+          <div class="menu-body">
+            <label class="menu-field">
+              <span class="muted small">API Provider</span>
+              <select id="apiProviderSelect">
+                <option value="openrouter">OpenRouter</option>
+                <option value="gemini">Google Gemini</option>
+              </select>
+            </label>
+            <label class="menu-field" id="apiKeyField">
+              <span class="muted small">API Keys</span>
+              <div class="row stretch" style="gap:8px;">
+                <select id="apiKeySelect" title="Saved API keys"></select>
+                <button class="btn" id="addApiKeyBtn" type="button" title="Add API key">Add</button>
+                <button class="btn danger" id="deleteApiKeyBtn" type="button" title="Delete selected key">Delete</button>
+              </div>
+              <div id="apiKeyAddGroup" class="row hidden" style="flex-direction:column; align-items:stretch; gap:8px; margin-top:8px;">
+                <input type="text" id="apiKeyLabelInput" placeholder="Label (optional, e.g., Work, Personal)" />
+                <input type="password" id="apiKeyInput" placeholder="Enter your API key" />
+                <div class="row" style="gap:8px;">
+                  <button class="btn success" id="confirmAddApiKeyBtn" type="button">Save Key</button>
+                  <button class="btn ghost" id="cancelAddApiKeyBtn" type="button">Cancel</button>
+                </div>
+              </div>
+            </label>
+            <label class="menu-field">
+              <span class="muted small">Model</span>
+              <select id="modelSelect" title="OpenRouter model">
+                <option>Loading models...</option>
+              </select>
+            </label>
+            <label class="menu-field">
+              <span class="muted small">Temperature</span>
+              <input type="number" step="0.1" min="0" max="2" id="tempInput" />
+            </label>
+            <label class="menu-field">
+              <span class="muted small">Max tokens</span>
+              <input type="number" min="1" max="8192" id="maxTokensInput" />
+            </label>
+            <button class="btn" id="contextSettingsBtn" style="margin-top: 8px;">Context...</button>
+            <button class="btn primary" id="saveSettingsBtn" style="margin-top: 8px;">Save</button>
+          </div>
+        </div>
+        <div class="theme-selector-wrapper">
+          <button class="btn theme-selector-btn" id="themeSelectorBtn" title="Select theme">
+            <span class="theme-icon" id="currentThemeIcon">☀️</span>
+            <span id="currentThemeLabel">Light</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-dropdown-arrow">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          <div class="theme-menu hidden" id="themeMenu" role="dialog" aria-label="Theme selection">
+            <div class="theme-menu-header">
+              <strong>Choose Theme</strong>
+            </div>
+            <div class="theme-options">
+              <button class="theme-option" data-theme="light">
+                <div class="theme-preview light-theme">
+                  <div class="preview-header"></div>
+                  <div class="preview-content">
+                    <div class="preview-line"></div>
+                    <div class="preview-line short"></div>
+                    <div class="preview-line"></div>
+                  </div>
+                </div>
+                <div class="theme-info">
+                  <span class="theme-name">Light</span>
+                  <span class="theme-desc">Clean and bright</span>
+                </div>
+                <span class="theme-icon">☀️</span>
+              </button>
+              <button class="theme-option" data-theme="dark">
+                <div class="theme-preview dark-theme">
+                  <div class="preview-header"></div>
+                  <div class="preview-content">
+                    <div class="preview-line"></div>
+                    <div class="preview-line short"></div>
+                    <div class="preview-line"></div>
+                  </div>
+                </div>
+                <div class="theme-info">
+                  <span class="theme-name">Dark</span>
+                  <span class="theme-desc">Easy on the eyes</span>
+                </div>
+                <span class="theme-icon">🌙</span>
+              </button>
+              <button class="theme-option" data-theme="green">
+                <div class="theme-preview green-theme">
+                  <div class="preview-header"></div>
+                  <div class="preview-content">
+                    <div class="preview-line"></div>
+                    <div class="preview-line short"></div>
+                    <div class="preview-line"></div>
+                  </div>
+                </div>
+                <div class="theme-info">
+                  <span class="theme-name">Green</span>
+                  <span class="theme-desc">Nature inspired</span>
+                </div>
+                <span class="theme-icon">🌿</span>
+              </button>
+              <button class="theme-option" data-theme="amoled-black">
+                <div class="theme-preview" style="background: #000;">
+                    <div class="preview-header"></div>
+                    <div class="preview-content">
+                    <div class="preview-line"></div>
+                    <div class="preview-line short"></div>
+                    <div class="preview-line"></div>
+                    </div>
+                </div>
+                <div class="theme-info">
+                    <span class="theme-name">AMOLED</span>
+                    <span class="theme-desc">True black theme</span>
+                </div>
+                <span class="theme-icon">🖤</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="status" id="aiStatus" title="AI status"><span class="dot"></span><span id="aiStatusText">Idle</span></div>
+    </header>
+
+    <div class="toolbar">
+      <div class="group">
+        <button class="btn icon" data-cmd="bold" title="Bold (Ctrl/Cmd+B)"><b>B</b></button>
+        <button class="btn icon" data-cmd="italic" title="Italic (Ctrl/Cmd+I)"><i>I</i></button>
+        <button class="btn icon" data-cmd="underline" title="Underline (Ctrl/Cmd+U)"><u>U</u></button>
+        <button class="btn icon" data-cmd="strikeThrough" title="Strikethrough">S</button>
+      </div>
+      <div class="group">
+        <button class="btn" data-block="p">P</button>
+        <button class="btn" data-block="h2">H2</button>
+        <button class="btn" data-block="h3">H3</button>
+        <button class="btn" data-cmd="insertUnorderedList" title="Bulleted list">• List</button>
+        <button class="btn" data-cmd="insertOrderedList" title="Numbered list">1. List</button>
+        <button class="btn" data-block="blockquote" title="Quote">""</button>
+      </div>
+      <div class="group">
+        <button class="btn primary" id="aiContinueBtn" title="Continue writing from cursor">AI Continue</button>
+        <button class="btn primary" id="aiVividBtn" title="Enrich with sensory detail">Make Vivid</button>
+        <button class="btn primary" id="aiFixBtn" title="Grammar & polish selection">Polish</button>
+        <button class="btn primary" id="aiOutlineBtn" title="Generate outline">Outline</button>
+        <button class="btn primary" id="aiSummaryBtn" title="Summarize chapter">Summary</button>
+      </div>
+      <div class="group">
+        <button class="btn" id="exportBtn" title="Export to .txt">Export</button>
+        <button class="btn danger" id="newBtn" title="New doc">New</button>
+      </div>
+      <span class="right muted small" id="wordCount">0 words</span>
+    </div>
+
+    <div class="layout">
+      <aside class="leftbar">
+        <div class="section">
+          <h3>Chapters</h3>
+          <div class="chapters-list" id="chapterList"></div>
+          <div class="row" style="margin-top:16px">
+            <button class="btn primary" id="addChapterBtn">+ Add Chapter</button>
+            <button class="btn ghost" id="importBtn">Import</button>
+            <input type="file" id="importFile" accept=".txt,.md,.rtf" hidden />
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Characters</h3>
+          <div id="characterList" class="column" style="display:flex; flex-direction:column; gap:8px"></div>
+          <div class="row" style="margin-top:16px">
+            <button class="btn primary" id="addCharacterBtn">+ Add Character</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Active in Chapter</h3>
+          <div id="activeCharacters" class="column" style="display:flex; flex-direction:column; gap:6px"></div>
+        </div>
+
+        <div class="leftbar-footer">
+          <div class="small muted">Tip: Select text and use AI tools to rewrite, expand, or polish. Press Ctrl/Cmd+K to quick prompt.</div>
+        </div>
+      </aside>
+
+      <div class="resizer" id="left-resizer"></div>
+
+      <main class="editor-wrap">
+        <div class="page">
+          <div class="chapter-header">
+            <input id="chapterTitle" placeholder="Chapter title" />
+            <button class="btn primary" id="beatsBtn">AI Beats</button>
+          </div>
+          <div id="editor" contenteditable="true" spellcheck="true"></div>
+        </div>
+      </main>
+
+      <div class="resizer" id="right-resizer"></div>
+
+      <aside class="rightbar">
+        <div class="tab-container">
+          <div class="tab-buttons">
+            <button class="tab-button active" data-tab-target="guides">Guides</button>
+            <button class="tab-button" data-tab-target="roleplay">Character Roleplay</button>
+          </div>
+          <div class="tab-content active" data-tab="guides">
+            <div class="section">
+              <h3>Story Bible</h3>
+              <textarea id="storyBible" placeholder="World, premise, rules, tone, themes..."></textarea>
+              <div class="row">
+                <button class="btn primary" id="aiRefineBible">AI Refine</button>
+                <button class="btn ghost" id="aiConsistency">Continuity Check</button>
+              </div>
+              <div class="notice">AI will use this for all chapters.</div>
+            </div>
+            <div class="section">
+              <h3>Narrative Guide (Chapter)</h3>
+              <textarea id="narrative" placeholder="Chapter-specific beats, goals, conflicts, POV, outcome."></textarea>
+              <div class="row">
+                <button class="btn primary" id="aiRefineNarrative">AI Refine</button>
+                <button class="btn ghost" id="aiBeatSheet">Beat Sheet</button>
+              </div>
+            </div>
+            <div class="section">
+              <h3>Selection transforms</h3>
+              <textarea id="styleHint" placeholder="Style or constraints (e.g., 'Noir, first-person, clipped sentences')" style="min-height: 40px;"></textarea>
+              <div class="row">
+                <button class="btn primary" id="aiRewriteBtn" title="Rewrite selection with style">Rewrite</button>
+              </div>
+              <textarea id="expandHint" placeholder="Expand selection by ~200 words, add sensory detail" style="margin-top: 12px; min-height: 40px;"></textarea>
+              <div class="row">
+                <button class="btn primary" id="aiExpandBtn" title="Expand selection">Expand</button>
+              </div>
+            </div>
+            <div class="section">
+              <h3>World tools</h3>
+              <textarea id="settingPrompt" placeholder="Describe a place or mood..." style="min-height: 40px;"></textarea>
+              <div class="row">
+                <button class="btn primary" id="aiSettingBtn">Setting</button>
+              </div>
+              <textarea id="namesPrompt" placeholder="Names for a [culture/era/role]..." style="margin-top: 12px; min-height: 40px;"></textarea>
+              <div class="row">
+                <button class="btn primary" id="aiNamesBtn">Names</button>
+              </div>
+            </div>
+          </div>
+          <div class="tab-content" data-tab="roleplay">
+            <div class="roleplay-header">
+                <h3>Character Roleplay</h3>
+                <p class="small muted">Chat with your cast. The AI will play the selected characters.</p>
+            </div>
+            <div class="roleplay-settings">
+                <div class="setting-group">
+                    <h4>Active Characters</h4>
+                    <div class="row" id="rpCharSelect" style="flex-wrap:wrap; gap: 6px;">
+                        <!-- Pills will be rendered here -->
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <h4>AI Directives</h4>
+                    <div class="row toggles">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="rpStageDir" checked>
+                            <span class="slider"></span>
+                            <span class="label-text">Stage Directions</span>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="rpTerse">
+                            <span class="slider"></span>
+                            <span class="label-text">Terse Replies</span>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="rpFirstPerson">
+                            <span class="slider"></span>
+                            <span class="label-text">1st-Person POV</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <h4>Reply Style</h4>
+                    <div class="row">
+                        <label class="row" style="gap:8px;">
+                            <span class="small muted">Length</span>
+                            <select id="rpLength">
+                                <option value="short">Short</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="long">Long</option>
+                            </select>
+                        </label>
+                        <label class="row" style="gap:8px;">
+                            <span class="small muted">Tone</span>
+                            <select id="rpTone">
+                                <option value="neutral" selected>Neutral</option>
+                                <option value="playful">Playful</option>
+                                <option value="tense">Tense</option>
+                                <option value="formal">Formal</option>
+                                <option value="sarcastic">Sarcastic</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <h4>Context & Mode</h4>
+                    <div class="row" style="gap:8px; align-items:center; flex-wrap:wrap;">
+                        <label class="row" style="gap:8px;">
+                            <span class="small muted">Context</span>
+                            <select id="rpContextScope" title="How much story the characters can access">
+                                <option value="tail" selected>Chapter Tail</option>
+                                <option value="chapter">Full Chapter</option>
+                                <option value="story">Entire Story</option>
+                            </select>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="rpPlanningMode">
+                            <span class="slider"></span>
+                            <span class="label-text">Planning Mode</span>
+                        </label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="rpNarrator">
+                            <span class="slider"></span>
+                            <span class="label-text">Neutral Narrator</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <h4>Scene Memory</h4>
+                    <textarea id="rpMemory" placeholder="Optional: premise, recent off-screen events, or continuity notes that the characters should remember during RP." style="min-height:70px"></textarea>
+                </div>
+            </div>
+            <div class="chat-container">
+                <div class="chat">
+                    <button class="btn ghost icon" id="chatClearBtn" title="Clear Chat">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    </button>
+                    <div class="chat-log" id="chatLog"></div>
+                    <div class="chat-controls">
+                        <input id="chatInput" placeholder="Say something to the characters..." />
+                        <button class="btn" id="chatSendBtn" title="Send message">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <div class="grow"></div>
+                    <button class="btn" id="chatRegenBtn" title="Regenerate last AI reply">Regenerate</button>
+                    <button class="btn" id="chatUndoBtn" title="Undo last message">Undo</button>
+                </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="floating">
+      <button class="btn primary" id="quickPromptBtn" title="Quick prompt (Ctrl/Cmd+K)">Quick Prompt</button>
+      <span class="muted small">OpenRouter</span>
+      <span class="muted small" id="charCount">0 chars</span>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div id="characterModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <input type="hidden" id="charModalId" />
+      <div class="row">
+        <h2 id="charModalTitle">Add Character</h2>
+        <button class="btn ghost" onclick="hideModal('characterModal')">Cancel</button>
+      </div>
+      <div class="divider"></div>
+      <div class="panel" style="padding:0; gap: 14px;">
+        <label class="menu-field"><span class="muted small">Name</span><input id="charModalName" /></label>
+        <label class="menu-field"><span class="muted small">Bio / Persona</span><textarea id="charModalBio" style="min-height:80px"></textarea></label>
+        <label class="menu-field"><span class="muted small">Goals / Secrets</span><input id="charModalGoals" /></label>
+        <label class="menu-field"><span class="muted small">Voice / Style</span><input id="charModalVoice" /></label>
+      </div>
+      <div class="divider"></div>
+      <div class="row">
+        <button class="btn danger" id="charModalDeleteBtn">Delete Character</button>
+        <div class="grow"></div>
+        <button class="btn primary" id="charModalSaveBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="contextModal" class="modal-backdrop hidden">
+    <div class="modal" style="width: min(700px, 94vw);">
+      <div class="row">
+        <h2>AI Context Settings</h2>
+        <button class="btn ghost" onclick="hideModal('contextModal')">Close</button>
+      </div>
+      <div class="divider"></div>
+      <div class="panel" style="padding:0; gap: 20px;">
+        <div class="menu-field">
+          <div class="row" style="justify-content: space-between;">
+            <span class="muted small">Context Size (Tokens)</span>
+            <span id="contextSliderValue" class="pill">4096 tokens</span>
+          </div>
+          <input type="range" id="contextSlider" min="512" max="80000" step="256" value="4096">
+          <div class="row" style="justify-content: space-between; font-size: 11px; padding: 0 4px;">
+            <span class="muted">Minimal</span>
+            <span class="muted">Balanced</span>
+            <span class="muted">Everything</span>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="menu-field">
+          <div class="row" style="justify-content: space-between;">
+            <h4 style="margin:0; text-transform:uppercase; color:var(--accent); font-size:11px; letter-spacing:1px;">Chapter-Specific Context</h4>
+            <label class="toggle-switch">
+              <input type="checkbox" id="contextChapterToggle">
+              <span class="slider"></span>
+              <span class="label-text small">Override with List</span>
+            </label>
+          </div>
+          <p class="small muted" style="margin: 4px 0 12px;">Check chapters to include them in context. Overrides the token slider.</p>
+          <div id="contextChapterList" class="chapters-context-list" style="max-height: 40vh; overflow-y: auto; padding-right: 10px;">
+            <!-- Chapter items will be dynamically inserted here -->
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="row" style="justify-content:flex-end;">
+        <button class="btn primary" onclick="hideModal('contextModal')">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="quickModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="row">
+        <h2>Quick Prompt</h2>
+        <button class="btn ghost" onclick="hideModal('quickModal')">Close</button>
+      </div>
+      <div class="divider"></div>
+      <p class="small muted">Sends your selection and context to the AI. Example: "Rewrite in Ursula Le Guin's lyrical voice, deepen setting."</p>
+      <textarea id="quickPromptArea" placeholder="What would you like the AI to do?"></textarea>
+      <div class="row">
+        <button class="btn primary" id="quickRunBtn">Run</button>
+        <label class="row"><input type="checkbox" id="quickReplace" checked /> Replace selection</label>
+      </div>
+    </div>
+  </div>
+
+  <div id="exportModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="row">
+        <h2>Export Document</h2>
+        <button class="btn ghost" type="button" id="exportCancelBtn">Cancel</button>
+      </div>
+      <div class="divider"></div>
+      <div class="panel" style="padding:0; gap:16px;">
+        <label class="menu-field">
+          <span class="muted small">File name</span>
+          <input id="exportFileName" />
+        </label>
+        <div class="menu-field">
+          <span class="muted small">Format</span>
+          <div class="export-options-grid">
+            <label class="export-option">
+              <input type="radio" name="exportFormat" value="txt" checked />
+              <span>Plain Text (.txt)</span>
+            </label>
+            <label class="export-option">
+              <input type="radio" name="exportFormat" value="docx" />
+              <span>Word Document (.docx)</span>
+            </label>
+            <label class="export-option">
+              <input type="radio" name="exportFormat" value="rtf" />
+              <span>Rich Text (.rtf)</span>
+            </label>
+            <label class="export-option">
+              <input type="radio" name="exportFormat" value="pdf" />
+              <span>PDF (.pdf)</span>
+            </label>
+          </div>
+        </div>
+        <div class="tooltip">Exports include all chapters in the current document.</div>
+      </div>
+      <div class="divider"></div>
+      <div class="row" style="justify-content:flex-end; gap:10px;">
+        <button class="btn primary" type="button" id="exportConfirmBtn">Export</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/html-docx-js@0.3.1/dist/html-docx.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    // -------------------
+    // Utilities
+    // -------------------
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    const uid = () => Math.random().toString(36).slice(2, 10);
+    const debounce = (fn, ms=400) => { let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; };
+    const escapeHtml = (str='') => String(str)
+      .replace(/&/g, '&')
+      .replace(/</g, '<')
+      .replace(/>/g, '>')
+      .replace(/"/g, '"')
+      .replace(/'/g, '&#39;');
+
+    function markdownToHtml(text=''){
+      if (!text) return '';
+      let source = text.replace(/\r\n/g, '\n');
+      const blocks = [];
+      source = source.replace(/```([\s\S]*?)```/g, (_, code)=>{
+        const token = `%%CODEBLOCK${blocks.length}%%`;
+        blocks.push(`<pre><code>${escapeHtml(code.trim())}</code></pre>`);
+        return token;
+      });
+      source = escapeHtml(source);
+      source = source.replace(/`([^`]+)`/g, (_, code)=> `<code>${escapeHtml(code)}</code>`);
+      source = source.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      source = source.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+      source = source.replace(/\*(?!\*)([^*]+)\*/g, '<em>$1</em>');
+      source = source.replace(/_([^_]+)_/g, '<em>$1</em>');
+      source = source.replace(/^\s*[-+*]\s+(.+)$/gm, '<li>$1</li>');
+      source = source.replace(/<\/li>\n/g, '</li>');
+      source = source.replace(/(<li>.*<\/li>)+/g, match => `<ul>${match}</ul>`);
+      source = source.replace(/\n{2,}/g, '<br /><br />');
+      source = source.replace(/\n/g, '<br />');
+      source = source.replace(/%%CODEBLOCK(\d+)%%/g, (_, idx)=> blocks[idx] || '');
+      return source;
+    }
+
+    function showModal(id){ $('#'+id).classList.remove('hidden'); }
+    function hideModal(id){ $('#'+id).classList.add('hidden'); }
+
+    function toast(msg){
+      const t = document.createElement('div');
+      t.textContent = msg;
+      t.style.cssText = "position:fixed;left:50%;top:12px;transform:translateX(-50%);background:var(--paper);border:1px solid var(--line);padding:8px 12px;border-radius:8px;box-shadow:0 6px 30px rgba(0,0,0,.08);z-index:2000;color:var(--ink)";
+      document.body.appendChild(t);
+      setTimeout(()=>t.remove(), 2200);
+    }
+
+    function handleChatCommand(text) {
+      const parts = text.split(' ');
+      const command = parts[0].toLowerCase();
+      const args = parts.slice(1).join(' ');
+      const rp = getChapterRP();
+
+      if (command === '@help') {
+        const helpText = `**Character Commands:**
+- \`@add-char <name>\`: Creates a new character.
+- \`@list-chars\`: Lists all characters in the story.
+- \`@help\`: Shows this list of commands.`;
+        rp.history.push({ role: 'assistant', content: helpText });
+        renderChat();
+        return true;
+      }
+
+      if (command === '@add-char') {
+        const name = args.trim();
+        if (!name) {
+          toast('Usage: @add-char <Character Name>');
+          return true; // Command was handled (even if invalid)
+        }
+        
+        if (state.characters.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+            toast(`Character "${name}" already exists.`);
+            return true;
+        }
+
+        const newChar = { id: uid(), name, bio: '', goals: '', voice: '', notes: '' };
+        state.characters.push(newChar);
+        
+        debouncedSave();
+        renderCharacters();
+        renderActiveCharacters();
+        renderRPCharacterPills();
+        
+        rp.history.push({
+          role: 'assistant',
+          content: `Character **${escapeHtml(name)}** has been added. You can edit their details in the left sidebar.`
+        });
+        renderChat();
+        
+        return true;
+      }
+
+      if (command === '@list-chars') {
+        let charListMD;
+        if (state.characters.length === 0) {
+          charListMD = "No characters have been created yet. Use `@add-char <name>` to create one.";
+        } else {
+          charListMD = "**Available Characters:**\n" + state.characters.map(c => `- ${escapeHtml(c.name)}`).join('\n');
+        }
+        
+        rp.history.push({ role: 'assistant', content: charListMD });
+        renderChat();
+        
+        return true;
+      }
+
+      return false; // Not a recognized command
+    }
+
+    function fileSave(name, content, type = 'text/plain') {
+      const blob = content instanceof Blob ? content : new Blob([content], { type });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        URL.revokeObjectURL(a.href);
+        a.remove();
+      }, 0);
+    }
+
+    function sanitizeFileName(name = 'story') {
+      return name.replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, ' ').trim() || 'story';
+    }
+
+    function escapeForHtmlAttr(str = '') {
+      return String(str)
+        .replace(/&/g, '&')
+        .replace(/</g, '<')
+        .replace(/>/g, '>')
+        .replace(/"/g, '"');
+    }
+
+    function getSuggestedFileName() {
+      return sanitizeFileName(state.title || 'story');
+    }
+
+    function buildExportPlainText() {
+      return state.chapters
+        .map((c, idx) => {
+          const title = c.title || `Chapter ${idx + 1}`;
+          const body = htmlToPlain(c.contentHTML || '');
+          return `${title}\n\n${body}`;
+        })
+        .join('\n\n---\n\n');
+    }
+
+    function buildExportHtml() {
+      const docTitle = escapeForHtmlAttr(getSuggestedFileName());
+      const chaptersHtml = state.chapters
+        .map((c, idx) => {
+          const title = escapeForHtmlAttr(c.title || `Chapter ${idx + 1}`);
+          const body = c.contentHTML || '<p></p>';
+          return `<article><h1>${title}</h1>${body}</article>`;
+        })
+        .join('<hr />');
+      return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${docTitle}</title></head><body>${chaptersHtml}</body></html>`;
+    }
+
+    function convertPlainTextToRtf(text) {
+      const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+      const lines = normalized
+        .split('\n')
+        .map(line => {
+          const safeLine = line.replace(/\\/g, '\\\\').replace(/{/g, '\\{').replace(/}/g, '\\}');
+          return safeLine.length ? `${safeLine}\\par` : '\\par';
+        });
+      return `{\rtf1\\ansi\n${lines.join('\n')}\n}`;
+    }
+
+    function exportDocument(format, baseName) {
+      saveCurrentChapterContent();
+      const sanitizedBase = sanitizeFileName(baseName || getSuggestedFileName());
+      const plain = buildExportPlainText();
+
+      if (format === 'txt') {
+        fileSave(`${sanitizedBase}.txt`, plain, 'text/plain;charset=utf-8');
+        toast('Exported as .txt');
+        return;
+      }
+
+      if (format === 'rtf') {
+        const rtf = convertPlainTextToRtf(plain);
+        fileSave(`${sanitizedBase}.rtf`, rtf, 'application/rtf');
+        toast('Exported as .rtf');
+        return;
+      }
+
+      if (format === 'docx') {
+        if (!window.htmlDocx) {
+          toast('DOCX export requires html-docx.js (not loaded).');
+          return;
+        }
+        const html = buildExportHtml();
+        const blob = window.htmlDocx.asBlob(html);
+        fileSave(`${sanitizedBase}.docx`, blob, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+        toast('Exported as .docx');
+        return;
+      }
+
+      if (format === 'pdf') {
+        const jspdf = window.jspdf;
+        if (!jspdf || !jspdf.jsPDF) {
+          toast('PDF export requires jsPDF (not loaded).');
+          return;
+        }
+        const pdf = new jspdf.jsPDF({ unit: 'pt', format: 'letter' });
+        const lines = pdf.splitTextToSize(plain, 540);
+        pdf.setFont('Times', 'Normal');
+        pdf.setFontSize(12);
+        pdf.text(lines, 36, 48, { lineHeightFactor: 1.5 });
+        const blob = pdf.output('blob');
+        fileSave(`${sanitizedBase}.pdf`, blob, 'application/pdf');
+        toast('Exported as .pdf');
+        return;
+      }
+
+      toast('Unsupported export format.');
+    }
+
+    function getSelectionInEditor(){
+      const sel = window.getSelection();
+      if (!sel || sel.rangeCount === 0) return null;
+      const range = sel.getRangeAt(0);
+      if (!$('#editor').contains(range.commonAncestorContainer)) return null;
+      return range;
+    }
+
+    function getSelectedText(){
+      const r = getSelectionInEditor();
+      return r ? r.toString() : '';
+    }
+
+    function textToHtmlParagraphs(text){
+      // Convert plain text with newlines into proper HTML paragraphs
+      if (!text) return '';
+      
+      // Split by double newlines for paragraphs
+      const paragraphs = text.split(/\n\n+/);
+      
+      return paragraphs.map(para => {
+        // Within each paragraph, replace single newlines with <br>
+        const withBreaks = para.trim().replace(/\n/g, '<br>');
+        return withBreaks ? `<p>${withBreaks}</p>` : '';
+      }).filter(Boolean).join('');
+    }
+
+    function markdownToEditorHtml(text = '') {
+      if (!text) return '';
+      
+      // Normalize line endings
+      let source = text.replace(/\r\n/g, '\n').trim();
+      
+      // Extract code blocks first to protect them
+      const codeBlocks = [];
+      source = source.replace(/```[\s\S]*?```/g, (match) => {
+        const token = `%%CODEBLOCK${codeBlocks.length}%%`;
+        codeBlocks.push(match);
+        return token;
+      });
+      
+      // Extract inline code to protect it
+      const inlineCodes = [];
+      source = source.replace(/`([^`]+)`/g, (match, code) => {
+        const token = `%%INLINECODE${inlineCodes.length}%%`;
+        inlineCodes.push(code);
+        return token;
+      });
+      
+      // Process block-level elements first
+      const lines = source.split('\n');
+      const processed = [];
+      let inList = false;
+      let listType = null;
+      let listItems = [];
+      
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const trimmed = line.trim();
+        
+        // Check if we're ending a list
+        if (inList && !trimmed.match(/^\s*[-+*]\s+/) && !trimmed.match(/^\s*\d+[.)]\s+/)) {
+          if (listItems.length > 0) {
+            const tag = listType === 'ul' ? 'ul' : 'ol';
+            processed.push(`<${tag}>${listItems.map(item => `<li>${item}</li>`).join('')}</${tag}>`);
+            listItems = [];
+          }
+          inList = false;
+          listType = null;
+        }
+        
+        // Headings
+        const headingMatch = trimmed.match(/^(#{1,6})\s+(.+)$/);
+        if (headingMatch) {
+          const level = headingMatch[1].length;
+          const content = headingMatch[2];
+          processed.push(`<h${level}>${content}</h${level}>`);
+          continue;
+        }
+        
+        // Blockquotes
+        if (trimmed.match(/^>\s+/)) {
+          const content = trimmed.replace(/^>\s+/, '');
+          processed.push(`<blockquote>${content}</blockquote>`);
+          continue;
+        }
+        
+        // Unordered lists
+        const ulMatch = trimmed.match(/^[-+*]\s+(.+)$/);
+        if (ulMatch) {
+          if (!inList || listType !== 'ul') {
+            if (inList && listItems.length > 0) {
+              const tag = listType === 'ul' ? 'ul' : 'ol';
+              processed.push(`<${tag}>${listItems.map(item => `<li>${item}</li>`).join('')}</${tag}>`);
+              listItems = [];
+            }
+            inList = true;
+            listType = 'ul';
+          }
+          listItems.push(ulMatch[1]);
+          continue;
+        }
+        
+        // Ordered lists
+        const olMatch = trimmed.match(/^\d+[.)]\s+(.+)$/);
+        if (olMatch) {
+          if (!inList || listType !== 'ol') {
+            if (inList && listItems.length > 0) {
+              const tag = listType === 'ul' ? 'ul' : 'ol';
+              processed.push(`<${tag}>${listItems.map(item => `<li>${item}</li>`).join('')}</${tag}>`);
+              listItems = [];
+            }
+            inList = true;
+            listType = 'ol';
+          }
+          listItems.push(olMatch[1]);
+          continue;
+        }
+        
+        // Horizontal rules
+        if (trimmed.match(/^([-*_]){3,}$/)) {
+          processed.push('<hr>');
+          continue;
+        }
+        
+        // Empty lines
+        if (!trimmed) {
+          processed.push('');
+          continue;
+        }
+        
+        // Regular paragraphs
+        processed.push(trimmed);
+      }
+      
+      // Close any remaining list
+      if (inList && listItems.length > 0) {
+        const tag = listType === 'ul' ? 'ul' : 'ol';
+        processed.push(`<${tag}>${listItems.map(item => `<li>${item}</li>`).join('')}</${tag}>`);
+      }
+      
+      // Join processed lines and handle paragraph grouping
+      let html = processed.join('\n');
+      
+      // Group consecutive non-block lines into paragraphs
+      html = html.replace(/(?:^|\n)([^\n<][^\n]*(?:\n[^\n<][^\n]*)*)/g, (match, content) => {
+        const lines = content.trim().split('\n').filter(Boolean);
+        if (lines.length === 0) return '';
+        return `<p>${lines.join('<br>')}</p>`;
+      });
+      
+      // Process inline formatting
+      // Bold: **text** or __text__
+      html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+      
+      // Italic: *text* or _text_ (but not within words)
+      html = html.replace(/\*([^*\s][^*]*[^*\s]|\S)\*/g, '<em>$1</em>');
+      html = html.replace(/\b_([^_\s][^_]*[^_\s]|\S)_\b/g, '<em>$1</em>');
+      
+      // Strikethrough: ~~text~~
+      html = html.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+      
+      // Links: [text](url) - convert to plain text with URL
+      html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1');
+      
+      // Images: ![alt](url) - convert to plain text
+      html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '$1');
+      
+      // Restore inline code
+      html = html.replace(/%%INLINECODE(\d+)%%/g, (_, idx) => {
+        const code = inlineCodes[idx] || '';
+        return `<code>${escapeHtml(code)}</code>`;
+      });
+      
+      // Restore code blocks
+      html = html.replace(/%%CODEBLOCK(\d+)%%/g, (_, idx) => {
+        const block = codeBlocks[idx] || '';
+        const codeMatch = block.match(/```(?:\w+)?\n?([\s\S]*?)```/);
+        if (codeMatch) {
+          const code = codeMatch[1].trim();
+          return `<pre><code>${escapeHtml(code)}</code></pre>`;
+        }
+        return '';
+      });
+      
+      // Clean up multiple consecutive <br> tags
+      html = html.replace(/(<br\s*\/?>){3,}/g, '<br><br>');
+      
+      // Remove empty paragraphs
+      html = html.replace(/<p>\s*<\/p>/g, '');
+      
+      return html.trim();
+    }
+
+    function normalizeAIResponse(text = ''){
+      return markdownToEditorHtml(text || '');
+    }
+
+    function insertHtmlAtCursor(html){
+      const r = getSelectionInEditor();
+      if (r) {
+        r.deleteContents();
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        const frag = document.createDocumentFragment();
+        let node, lastNode;
+        while ((node = temp.firstChild)) {
+          lastNode = frag.appendChild(node);
+        }
+        r.insertNode(frag);
+        if (lastNode) {
+          r.setStartAfter(lastNode);
+          r.setEndAfter(lastNode);
+        }
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(r);
+      } else {
+        const el = $('#editor');
+        el.focus();
+        el.insertAdjacentHTML('beforeend', html);
+      }
+      onEditorInput();
+    }
+
+    function insertTextAtCursor(text, convertNewlines = true){
+      if (convertNewlines) {
+        // Convert newlines to HTML for AI-generated content
+        const html = textToHtmlParagraphs(text);
+        insertHtmlAtCursor(html);
+      } else {
+        // Plain text insertion (for user typing)
+        const r = getSelectionInEditor();
+        if (r) {
+          r.deleteContents();
+          const node = document.createTextNode(text);
+          r.insertNode(node);
+          r.setStartAfter(node);
+          r.setEndAfter(node);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(r);
+        } else {
+          const el = $('#editor');
+          el.focus();
+          document.execCommand('insertText', false, text);
+        }
+        onEditorInput();
+      }
+    }
+
+    function replaceSelection(text, convertNewlines = true){
+      if (convertNewlines) {
+        // Convert newlines to HTML for AI-generated content
+        const html = textToHtmlParagraphs(text);
+        const r = getSelectionInEditor();
+        if (r && !r.collapsed) {
+          r.deleteContents();
+          const temp = document.createElement('div');
+          temp.innerHTML = html;
+          const frag = document.createDocumentFragment();
+          let node, lastNode;
+          while ((node = temp.firstChild)) {
+            lastNode = frag.appendChild(node);
+          }
+          r.insertNode(frag);
+          if (lastNode) {
+            r.setStartAfter(lastNode);
+            r.setEndAfter(lastNode);
+          }
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(r);
+        } else {
+          insertTextAtCursor(text, convertNewlines);
+        }
+      } else {
+        // Plain text replacement
+        const r = getSelectionInEditor();
+        if (r && !r.collapsed) {
+          r.deleteContents();
+          const node = document.createTextNode(text);
+          r.insertNode(node);
+          r.setStartAfter(node); r.setEndAfter(node);
+          const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+        } else {
+          insertTextAtCursor(text, convertNewlines);
+        }
+      }
+      onEditorInput();
+    }
+
+    function htmlToPlain(html){
+      const tmp = document.createElement('div'); tmp.innerHTML = html;
+      return (tmp.innerText || '').replace(/\n{3,}/g, '\n\n').trim();
+    }
+
+    function countWords(str){
+      const s = (str||'').trim().replace(/\s+/g,' ');
+      if (!s) return 0;
+      return s.split(' ').filter(Boolean).length;
+    }
+
+    // -------------------
+    // App State
+    // -------------------
+    const DEFAULT_DOC = {
+      id: uid(),
+      title: "Untitled story",
+      storyBible: "",
+      settings: { 
+        apiProvider: "openrouter", 
+        model: "anthropic/claude-3.5-sonnet", 
+        temperature: 0.7, 
+        maxTokens: 900, 
+        theme: "light",
+        contextTokenSize: 4096,
+        useChapterContext: false,
+      },
+      characters: [
+        // example
+        // { id: uid(), name: "Ari", bio: "Reckless courier in a neon-drowned city.", goals: "Pay debts, find missing sister.", voice: "Snarky, fast, vivid", notes: "" }
+      ],
+      chapters: [
+        { id: uid(), title: "Chapter 1", narrative: "", contentHTML: "<p></p>", activeCharacters: [], contextInclude: true, contextSummary: null }
+      ],
+      ui: { currentChapterId: null, currentRightTab: 'guides' }
+    };
+
+    let state = loadState();
+    if (!state.ui.currentChapterId) state.ui.currentChapterId = state.chapters[0]?.id;
+
+    const MANAGEMENT_KEYS = ['storyStudio.projects.v1', 'storyStudio:projects'];
+    function getProjectId() {
+      try {
+        const url = new URL(window.location.href);
+        // Support both ?projectId= and ?project= for backward compatibility
+        return url.searchParams.get('projectId') || url.searchParams.get('project');
+      } catch(e) { return null; }
+    }
+    function getStorageKey() {
+      const id = getProjectId();
+      return id ? `storyStudio:project:${id}` : 'storyStudio';
+    }
+    function touchProjectIndex() {
+      const id = getProjectId();
+      if (!id) return;
+      const entry = {
+        id,
+        name: state?.title || 'Untitled story',
+        updatedAt: new Date().toISOString()
+      };
+      // Update both the current management list and legacy list for safety
+      MANAGEMENT_KEYS.forEach(KEY => {
+        try {
+          const raw = localStorage.getItem(KEY);
+          const list = raw ? JSON.parse(raw) : [];
+          const arr = Array.isArray(list) ? list : [];
+          const idx = arr.findIndex(p => p && p.id === id);
+          if (idx >= 0) {
+            arr[idx] = { ...arr[idx], ...entry };
+          } else {
+            const createdAt = new Date().toISOString();
+            arr.push({ createdAt, stats: {}, ...entry });
+          }
+          localStorage.setItem(KEY, JSON.stringify(arr));
+        } catch(_) {}
+      });
+    }
+
+    function loadState(){
+      try {
+        const raw = localStorage.getItem(getStorageKey());
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (!parsed.settings) parsed.settings = {};
+          if (typeof parsed.settings.maxTokens !== 'number') parsed.settings.maxTokens = DEFAULT_DOC.settings.maxTokens;
+          if (typeof parsed.settings.contextTokenSize !== 'number') parsed.settings.contextTokenSize = DEFAULT_DOC.settings.contextTokenSize;
+          if (typeof parsed.settings.useChapterContext !== 'boolean') parsed.settings.useChapterContext = false;
+          if (!parsed.ui) parsed.ui = {};
+          if (!parsed.ui.currentRightTab) parsed.ui.currentRightTab = 'guides';
+          parsed.chapters.forEach(c => {
+            if (typeof c.contextInclude !== 'boolean') c.contextInclude = true;
+            if (typeof c.contextSummary === 'undefined') c.contextSummary = null;
+          });
+          return parsed;
+        }
+      } catch(e){}
+      return JSON.parse(JSON.stringify(DEFAULT_DOC));
+    }
+    function saveState(){
+      localStorage.setItem(getStorageKey(), JSON.stringify(state));
+      $('#saveStatus').textContent = 'Saved';
+      // Update project index metadata if in project mode
+      touchProjectIndex();
+    }
+    const debouncedSave = debounce(saveState, 500);
+
+    function currentChapter(){
+      return state.chapters.find(c => c.id === state.ui.currentChapterId);
+    }
+
+    function setAIStatus(status, label){
+      const el = $('#aiStatus');
+      el.classList.remove('busy','ok','err');
+      if (status === 'busy') el.classList.add('busy');
+      if (status === 'ok') el.classList.add('ok');
+      if (status === 'err') el.classList.add('err');
+      $('#aiStatusText').textContent = label || (status === 'busy' ? 'Thinking…' : status === 'ok' ? 'Done' : status === 'err' ? 'Error' : 'Idle');
+    }
+
+    function toggleAIMenu(force){
+      const menu = $('#aiMenu');
+      const btn = $('#aiMenuBtn');
+      if (!menu || !btn) return;
+      const shouldOpen = typeof force === 'boolean' ? force : menu.classList.contains('hidden');
+      if (shouldOpen){
+        menu.classList.remove('hidden');
+        btn.setAttribute('aria-expanded', 'true');
+        const focusTarget = $('#modelSelect');
+        if (focusTarget) focusTarget.focus();
+      } else {
+        menu.classList.add('hidden');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    function isAIMenuOpen(){
+      const menu = $('#aiMenu');
+      return !!(menu && !menu.classList.contains('hidden'));
+    }
+
+    // -------------------
+    // Rendering
+    // -------------------
+    function renderAll(){
+      $('#docTitle').value = state.title;
+      const apiProviderSelect = $('#apiProviderSelect');
+      if(apiProviderSelect) apiProviderSelect.value = state.settings.apiProvider || 'openrouter';
+      const modelSelect = $('#modelSelect');
+      if (modelSelect) modelSelect.value = state.settings.model || "anthropic/claude-3.5-sonnet";
+      const tempInput = $('#tempInput');
+      if (tempInput) tempInput.value = state.settings.temperature ?? 0.7;
+      const maxTokensInput = $('#maxTokensInput');
+      if (maxTokensInput) maxTokensInput.value = state.settings.maxTokens ?? DEFAULT_DOC.settings.maxTokens;
+      
+      const contextSlider = $('#contextSlider');
+      if(contextSlider) contextSlider.value = state.settings.contextTokenSize || 4096;
+      const contextSliderValue = $('#contextSliderValue');
+      if(contextSliderValue) contextSliderValue.textContent = `${state.settings.contextTokenSize || 4096} tokens`;
+      const contextChapterToggle = $('#contextChapterToggle');
+      if(contextChapterToggle) contextChapterToggle.checked = !!state.settings.useChapterContext;
+
+      const appEl = document.getElementById('app');
+      if (appEl) appEl.setAttribute('data-theme', state.settings.theme || 'light');
+      const themeSelector = $('#themeSelector');
+      if (themeSelector) themeSelector.value = state.settings.theme || 'light';
+      const aiMenu = $('#aiMenu');
+      if (aiMenu) aiMenu.classList.add('hidden');
+      const aiMenuBtn = $('#aiMenuBtn');
+      if (aiMenuBtn) aiMenuBtn.setAttribute('aria-expanded', 'false');
+
+      renderChapters();
+      renderEditor();
+      renderCharacters();
+      renderActiveCharacters();
+      renderRPCharacterPills();
+      renderRPSettings();
+      renderChat();
+      setRightTab(state.ui.currentRightTab || 'guides', true);
+      $('#storyBible').value = state.storyBible || '';
+      $('#narrative').value = currentChapter()?.narrative || '';
+      updateWordAndCharCount();
+      renderContextChapterList();
+    }
+    
+    function renderContextChapterList() {
+      const listEl = $('#contextChapterList');
+      if (!listEl) return;
+      listEl.innerHTML = '';
+      state.chapters.forEach(c => {
+        const item = document.createElement('div');
+        item.className = 'chapter-context-item';
+        item.dataset.id = c.id;
+
+        const fullSummary = c.contextSummary || '';
+        const preview = fullSummary.slice(0, 120);
+        const summaryDisplay = c.contextSummary
+          ? `<div class="summary-display">
+                <span class="tag summary-text" title="${escapeForHtmlAttr(fullSummary)}">${escapeHtml(preview)}</span>
+                <button class="btn ghost small" data-action="open-summary">View Summary</button>
+                <button class="btn icon ghost danger" data-action="delete-summary" title="Use full chapter text instead">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+             </div>`
+          : `<div style="display: flex; gap: 6px;">
+               <button class="btn ghost small" data-action="compact">Compact</button>
+               <button class="btn ghost small" data-action="open-summary" title="Open or generate summary">View Summary</button>
+             </div>`;
+
+        item.innerHTML = `
+          <div class="flex">
+            <input type="checkbox" ${c.contextInclude ? 'checked' : ''} data-action="toggle-include" />
+            <span class="chapter-title">${ c.title || 'Untitled' }</span>
+          </div>
+          <div class="chapter-context-actions">
+            ${summaryDisplay}
+          </div>
+        `;
+        listEl.appendChild(item);
+      });
+    }
+
+    function renderChapters(){
+      const list = $('#chapterList'); list.innerHTML = '';
+      state.chapters.forEach((c, idx) => {
+        const item = document.createElement('div');
+        item.className = 'chapter-item' + (c.id === state.ui.currentChapterId ? ' active' : '');
+        item.innerHTML = `
+          <span>${c.title || 'Untitled'}</span>
+          <span class="muted small">#${idx+1}</span>
+          <span class="mini-actions">
+            <button class="btn icon" title="Move up" data-move="up">↑</button>
+            <button class="btn icon" title="Move down" data-move="down">↓</button>
+            <button class="btn icon" title="Rename" data-action="rename">✎</button>
+            <button class="btn icon danger" title="Delete" data-action="delete">×</button>
+          </span>`;
+        item.addEventListener('click', (e)=>{
+          if (e.target.closest('.mini-actions')) return; // handled below
+          switchChapter(c.id);
+        });
+        item.querySelector('[data-move="up"]').addEventListener('click', (e)=>{ e.stopPropagation(); moveChapter(idx, -1); });
+        item.querySelector('[data-move="down"]').addEventListener('click', (e)=>{ e.stopPropagation(); moveChapter(idx, 1); });
+        item.querySelector('[data-action="rename"]').addEventListener('click', (e)=>{ e.stopPropagation(); renameChapter(c.id); });
+        item.querySelector('[data-action="delete"]').addEventListener('click', (e)=>{ e.stopPropagation(); deleteChapter(c.id); });
+        list.appendChild(item);
+      });
+    }
+
+    function renderEditor(){
+      const ch = currentChapter();
+      $('#chapterTitle').value = ch?.title || '';
+      $('#editor').innerHTML = ch?.contentHTML || '<p></p>';
+    }
+
+    function renderCharacters(){
+      const wrap = $('#characterList'); wrap.innerHTML = '';
+      if (!state.characters.length){
+        const empty = document.createElement('div');
+        empty.className = 'notice';
+        empty.textContent = 'No characters yet. Add one!';
+        wrap.appendChild(empty);
+      }
+      state.characters.forEach(char => {
+        const card = document.createElement('div');
+        card.className = 'character-card';
+        card.innerHTML = `
+          <div class="row">
+            <div class="name">${char.name}</div>
+            <div class="flex">
+              <button class="btn ghost small" data-edit="${char.id}">Edit</button>
+              <button class="btn ghost danger small" data-delete="${char.id}">Del</button>
+            </div>
+          </div>
+          <div class="muted small">${char.bio || ''}</div>
+          <div class="row">
+            <span class="pill" title="Voice">${char.voice || 'voice: n/a'}</span>
+            <span class="pill" title="Goals">${char.goals || 'goals: n/a'}</span>
+          </div>
+        `;
+        card.querySelector('[data-edit]').addEventListener('click', ()=> showCharacterModal(char.id));
+        card.querySelector('[data-delete]').addEventListener('click', ()=> deleteCharacter(char.id));
+        wrap.appendChild(card);
+      });
+    }
+
+    function renderActiveCharacters(){
+      const wrap = $('#activeCharacters'); wrap.innerHTML = '';
+      const ch = currentChapter();
+      state.characters.forEach(char => {
+        const row = document.createElement('label');
+        row.className = 'row';
+        row.innerHTML = `
+          <input type="checkbox" ${ch.activeCharacters.includes(char.id) ? 'checked' : ''} />
+          <span>${char.name}</span>
+        `;
+        row.querySelector('input').addEventListener('change', (e)=>{
+          if (e.target.checked) ch.activeCharacters.push(char.id);
+          else ch.activeCharacters = ch.activeCharacters.filter(id => id !== char.id);
+          debouncedSave();
+          renderRPCharacterPills();
+        });
+        wrap.appendChild(row);
+      });
+    }
+
+    function renderRPCharacterPills(){
+      const wrap = $('#rpCharSelect'); wrap.innerHTML = '';
+      const ch = currentChapter();
+      const rp = getChapterRP();
+      const active = state.characters.filter(c => ch.activeCharacters.includes(c.id));
+
+      const hasNarrator = !!rp.settings.narrator;
+
+      if (!active.length && !hasNarrator){
+        const s = document.createElement('span');
+        s.className = 'muted small';
+        s.textContent = 'No active characters selected.';
+        wrap.appendChild(s);
+        return;
+      }
+
+      // Controls
+      const allBtn = document.createElement('button');
+      allBtn.type = 'button';
+      allBtn.className = 'tag';
+      allBtn.textContent = 'All';
+      const noneBtn = document.createElement('button');
+      noneBtn.type = 'button';
+      noneBtn.className = 'tag';
+      noneBtn.textContent = 'Clear';
+      wrap.appendChild(allBtn);
+      wrap.appendChild(noneBtn);
+
+      active.forEach(c => {
+        const pill = document.createElement('label');
+        pill.className = 'tag';
+        pill.innerHTML = `<input type="checkbox" checked data-char="${c.id}" /> ${c.name}`;
+        wrap.appendChild(pill);
+      });
+
+      if (hasNarrator){
+        const pill = document.createElement('label');
+        pill.className = 'tag';
+        pill.innerHTML = `<input type="checkbox" checked data-char="__narrator__" /> Narrator`;
+        wrap.appendChild(pill);
+      }
+
+      allBtn.addEventListener('click', ()=>{
+        $$('#rpCharSelect input[type="checkbox"]').forEach(cb => cb.checked = true);
+      });
+      noneBtn.addEventListener('click', ()=>{
+        $$('#rpCharSelect input[type="checkbox"]').forEach(cb => cb.checked = false);
+      });
+    }
+
+    function setRightTab(tab, skipSave=false){
+      const validTabs = ['guides', 'roleplay'];
+      const nextTab = validTabs.includes(tab) ? tab : 'guides';
+      const buttons = $$('.tab-button');
+      const contents = $$('.tab-content');
+      buttons.forEach(btn => {
+        const isActive = btn.getAttribute('data-tab-target') === nextTab;
+        btn.classList.toggle('active', isActive);
+      });
+      contents.forEach(panel => {
+        const isActive = panel.getAttribute('data-tab') === nextTab;
+        panel.classList.toggle('active', isActive);
+      });
+      state.ui.currentRightTab = nextTab;
+      if (!skipSave) debouncedSave();
+    }
+
+    function updateWordAndCharCount(){
+      const ch = currentChapter();
+      const words = countWords(htmlToPlain(ch?.contentHTML || ''));
+      const chars = (htmlToPlain(ch?.contentHTML || '')).length;
+      $('#wordCount').textContent = `${words} words`;
+      $('#charCount').textContent = `${chars} chars`;
+    }
+
+    // -------------------
+    // Chapter ops
+    // -------------------
+    function switchChapter(id){
+      saveCurrentChapterContent();
+      state.ui.currentChapterId = id;
+      renderChapters();
+      renderEditor();
+      $('#narrative').value = currentChapter().narrative || '';
+      renderActiveCharacters();
+      renderRPCharacterPills();
+      renderRPSettings();
+      renderChat();
+      debouncedSave();
+    }
+    function moveChapter(idx, delta){
+      const ni = idx + delta;
+      if (ni < 0 || ni >= state.chapters.length) return;
+      const [c] = state.chapters.splice(idx, 1);
+      state.chapters.splice(ni, 0, c);
+      debouncedSave();
+      renderChapters();
+    }
+    function renameChapter(id){
+      const c = state.chapters.find(c=>c.id===id);
+      const name = prompt('Rename chapter:', c.title || '');
+      if (name != null){ c.title = name.trim() || c.title; debouncedSave(); renderChapters(); if (id === state.ui.currentChapterId) $('#chapterTitle').value = c.title; }
+    }
+    function deleteChapter(id){
+      if (!confirm('Delete this chapter?')) return;
+      const idx = state.chapters.findIndex(c=>c.id===id);
+      state.chapters.splice(idx,1);
+      if (!state.chapters.length) state.chapters.push({ id: uid(), title: "Chapter 1", narrative: "", contentHTML: "<p></p>", activeCharacters: [], contextInclude: true, contextSummary: null });
+      if (state.ui.currentChapterId === id) state.ui.currentChapterId = state.chapters[Math.max(0, idx-1)].id;
+      debouncedSave();
+      renderChapters(); renderEditor(); renderActiveCharacters();
+    }
+
+    // -------------------
+    // Character ops
+    // -------------------
+    function showCharacterModal(id = null) {
+      const isNew = id === null;
+      $('#charModalId').value = isNew ? '' : id;
+      $('#charModalTitle').textContent = isNew ? 'Add Character' : 'Edit Character';
+      
+      const char = isNew ? {} : state.characters.find(c => c.id === id);
+      $('#charModalName').value = char?.name || '';
+      $('#charModalBio').value = char?.bio || '';
+      $('#charModalGoals').value = char?.goals || '';
+      $('#charModalVoice').value = char?.voice || '';
+
+      $('#charModalDeleteBtn').classList.toggle('hidden', isNew);
+      showModal('characterModal');
+      $('#charModalName').focus();
+    }
+
+    function saveCharacterFromModal() {
+      const id = $('#charModalId').value;
+      const name = $('#charModalName').value.trim();
+      if (!name) return toast('Character name is required.');
+
+      const charData = {
+        name,
+        bio: $('#charModalBio').value,
+        goals: $('#charModalGoals').value,
+        voice: $('#charModalVoice').value,
+      };
+
+      if (id) { // Editing existing
+        const char = state.characters.find(c => c.id === id);
+        Object.assign(char, charData);
+      } else { // Creating new
+        state.characters.push({ id: uid(), ...charData, notes: '' });
+      }
+      
+      debouncedSave();
+      renderCharacters();
+      renderActiveCharacters();
+      renderRPCharacterPills();
+      hideModal('characterModal');
+    }
+
+    function deleteCharacter(id) {
+      const char = state.characters.find(c => c.id === id);
+      if (!confirm(`Are you sure you want to delete ${char.name}?`)) return;
+
+      state.characters = state.characters.filter(c => c.id !== id);
+      // Also remove from any active chapter lists
+      state.chapters.forEach(ch => {
+        ch.activeCharacters = ch.activeCharacters.filter(charId => charId !== id);
+      });
+
+      debouncedSave();
+      renderCharacters();
+      renderActiveCharacters();
+      renderRPCharacterPills();
+      toast(`${char.name} deleted.`);
+    }
+
+    // -------------------
+    // Editor events
+    // -------------------
+    function saveCurrentChapterContent(){
+      const ch = currentChapter();
+      if (ch) ch.contentHTML = $('#editor').innerHTML;
+    }
+    const onEditorInput = debounce(()=>{
+      saveCurrentChapterContent();
+      $('#saveStatus').textContent = 'Saving…';
+      debouncedSave();
+      updateWordAndCharCount();
+    }, 250);
+
+    // Toolbar
+    function execCommand(cmd){
+      document.execCommand(cmd, false, null);
+      onEditorInput();
+    }
+    function setBlock(tag){
+      document.execCommand('formatBlock', false, tag);
+      onEditorInput();
+    }
+
+    // -------------------
+    // OpenRouter
+    // -------------------
+    // Multi-API key storage helpers
+    function loadProviderApiKeys(provider) {
+      try {
+        const raw = localStorage.getItem(`${provider}_api_keys`);
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+      } catch(_) { return []; }
+    }
+    function saveProviderApiKeys(provider, arr) {
+      localStorage.setItem(`${provider}_api_keys`, JSON.stringify(arr || []));
+    }
+    function getActiveApiKeyId(provider) {
+      return localStorage.getItem(`${provider}_active_api_key_id`) || '';
+    }
+    function setActiveApiKeyId(provider, id) {
+      if (id) localStorage.setItem(`${provider}_active_api_key_id`, id);
+    }
+    function migrateLegacyKeyIfNeeded(provider) {
+      const arr = loadProviderApiKeys(provider);
+      if (arr.length > 0) return arr;
+      const legacy = localStorage.getItem(`${provider}_api_key`);
+      if (legacy) {
+        const entry = { id: 'key_' + uid(), label: 'Default', key: legacy, createdAt: new Date().toISOString() };
+        const next = [entry];
+        saveProviderApiKeys(provider, next);
+        setActiveApiKeyId(provider, entry.id);
+        return next;
+      }
+      return arr;
+    }
+    function addApiKeyForProvider(provider, key, label='') {
+      const k = String(key || '').trim();
+      if (!k) return null;
+      const arr = loadProviderApiKeys(provider);
+      // avoid duplicates (by key string)
+      if (arr.some(e => e.key === k)) {
+        const existing = arr.find(e => e.key === k);
+        setActiveApiKeyId(provider, existing.id);
+        saveProviderApiKeys(provider, arr);
+        return existing;
+      }
+      const entry = { id: 'key_' + uid(), label: label && label.trim() ? label.trim() : `Key ${arr.length + 1}`, key: k, createdAt: new Date().toISOString() };
+      arr.push(entry);
+      saveProviderApiKeys(provider, arr);
+      setActiveApiKeyId(provider, entry.id);
+      return entry;
+    }
+    function deleteApiKeyForProvider(provider, id) {
+      let arr = loadProviderApiKeys(provider);
+      const idx = arr.findIndex(e => e.id === id);
+      if (idx === -1) return;
+      arr.splice(idx,1);
+      saveProviderApiKeys(provider, arr);
+      const activeId = getActiveApiKeyId(provider);
+      if (activeId === id) {
+        setActiveApiKeyId(provider, arr[0]?.id || '');
+      }
+    }
+    function renderApiKeysUI() {
+      const select = $('#apiKeySelect');
+      const delBtn = $('#deleteApiKeyBtn');
+      if (!select) return;
+      const provider = state.settings.apiProvider || 'openrouter';
+      const keys = loadProviderApiKeys(provider);
+      const activeId = getActiveApiKeyId(provider);
+      select.innerHTML = '';
+      if (!keys.length) {
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = 'No keys saved';
+        select.appendChild(opt);
+        select.disabled = true;
+        if (delBtn) delBtn.disabled = true;
+        $('#apiKeyAddGroup')?.classList.remove('hidden');
+        return;
+      }
+      select.disabled = false;
+      if (delBtn) delBtn.disabled = false;
+      keys.forEach(k => {
+        const opt = document.createElement('option');
+        opt.value = k.id;
+        opt.textContent = (k.label || k.id) + ' ••••••••';
+        opt.title = k.label || k.id;
+        select.appendChild(opt);
+      });
+      select.value = keys.find(k => k.id === activeId)?.id || keys[0].id;
+    }
+    function getApiKey(){
+      const provider = state.settings.apiProvider || 'openrouter';
+      let keys = migrateLegacyKeyIfNeeded(provider);
+      if (!keys.length) return '';
+      const activeId = getActiveApiKeyId(provider);
+      const active = keys.find(e => e.id === activeId) || keys[0];
+      if (!activeId || active.id !== activeId) setActiveApiKeyId(provider, active.id);
+      return active.key || '';
+    }
+
+    async function fetchModels() {
+      const provider = state.settings.apiProvider || 'openrouter';
+      const select = $('#modelSelect');
+      select.innerHTML = '<option>Loading models...</option>';
+
+      if (provider === 'gemini') {
+        const apiKey = getApiKey();
+        if (!apiKey) {
+          select.innerHTML = '<option>API Key needed</option>';
+          toggleAIMenu(true);
+          $('#apiKeyInput').focus();
+          return;
+        }
+        try {
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+          if (!response.ok) {
+            console.error('Failed to fetch models from Gemini');
+            select.innerHTML = '<option>Error loading models</option>';
+            return;
+          }
+          const { models } = await response.json();
+          const currentValue = state.settings.model;
+          select.innerHTML = ''; // Clear existing options
+
+          models
+            .filter(m => m.supportedGenerationMethods.includes('generateContent'))
+            .sort((a, b) => (a.displayName || a.name).localeCompare(b.displayName || b.name))
+            .forEach(model => {
+              const option = document.createElement('option');
+              option.value = model.name.replace('models/', 'gemini/');
+              option.textContent = model.displayName || model.name;
+              select.appendChild(option);
+            });
+
+          if (currentValue && select.querySelector(`option[value="${currentValue}"]`)) {
+            select.value = currentValue;
+          } else if (select.options.length > 0) {
+            const defaultModel = 'gemini/gemini-1.5-flash-latest';
+            if (select.querySelector(`option[value="${defaultModel}"]`)) {
+              select.value = defaultModel;
+            } else {
+              select.value = select.options[0].value;
+            }
+            state.settings.model = select.value;
+          }
+        } catch (error) {
+          console.error('Error fetching Gemini models:', error);
+          toast('Could not load models from Gemini.');
+          select.innerHTML = '<option>Error loading models</option>';
+        }
+        return;
+      }
+
+      // Default to OpenRouter
+      try {
+        const response = await fetch('https://openrouter.ai/api/v1/models');
+        if (!response.ok) {
+          console.error('Failed to fetch models from OpenRouter');
+          select.innerHTML = '<option value="anthropic/claude-3.5-sonnet">claude-3.5-sonnet (fallback)</option>';
+          return;
+        }
+        const { data } = await response.json();
+        const currentValue = state.settings.model;
+        select.innerHTML = ''; // Clear existing options
+        
+        data.sort((a, b) => a.name.localeCompare(b.name));
+
+        data.forEach(model => {
+          const option = document.createElement('option');
+          option.value = model.id;
+          option.textContent = model.name;
+          select.appendChild(option);
+        });
+        
+        if (currentValue && select.querySelector(`option[value="${currentValue}"]`)) {
+            select.value = currentValue;
+        } else if (data.length > 0) {
+            const defaultModel = "anthropic/claude-3.5-sonnet";
+            if(select.querySelector(`option[value="${defaultModel}"]`)){
+                select.value = defaultModel;
+            } else {
+                select.value = data[0].id;
+            }
+            state.settings.model = select.value;
+        }
+      } catch (error) {
+        console.error('Error fetching OpenRouter models:', error);
+        toast('Could not load models from OpenRouter.');
+      }
+    }
+    function setApiKey(k, label){
+      const provider = state.settings.apiProvider || 'openrouter';
+      addApiKeyForProvider(provider, k, label);
+    }
+
+    async function callGemini(messages, opts={}) {
+        const apiKey = getApiKey();
+        setAIStatus('busy', 'Thinking…');
+
+        const model = state.settings.model || 'gemini/gemini-1.5-flash-latest';
+        const { temperature: tempOverride, max_tokens: maxTokensOverride, ...restOpts } = opts;
+        const temperature = tempOverride ?? (state.settings.temperature ?? 0.7);
+        let maxTokens = maxTokensOverride ?? (state.settings.maxTokens ?? DEFAULT_DOC.settings.maxTokens);
+        maxTokens = Number(maxTokens);
+        if (!Number.isFinite(maxTokens)) maxTokens = DEFAULT_DOC.settings.maxTokens;
+        maxTokens = Math.max(1, Math.min(maxTokens, 8192));
+
+        // Extract system message if present
+        let systemInstruction = null;
+        const userMessages = [];
+        
+        for (const msg of messages) {
+            if (msg.role === 'system') {
+                // Use the first system message as system instruction
+                if (!systemInstruction) {
+                    systemInstruction = { parts: [{ text: msg.content }] };
+                }
+            } else {
+                userMessages.push(msg);
+            }
+        }
+
+        // Convert messages to Gemini format (only user and model roles)
+        const contents = userMessages.map(m => ({
+            role: m.role === 'assistant' ? 'model' : 'user',
+            parts: [{ text: m.content }]
+        }));
+
+        const body = {
+            contents,
+            generationConfig: {
+                temperature,
+                maxOutputTokens: maxTokens,
+            },
+            ...restOpts
+        };
+
+        // Add system instruction if available
+        if (systemInstruction) {
+            body.systemInstruction = systemInstruction;
+        }
+
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model.replace('gemini/','')}:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!res.ok) {
+            const txt = await res.text().catch(() => '');
+            setAIStatus('err', 'HTTP ' + res.status);
+            throw new Error('Gemini error: ' + res.status + ' ' + txt);
+        }
+        const json = await res.json();
+        const parts = json?.candidates?.[0]?.content?.parts || [];
+        const content = parts.map(p => p?.text || '').join('\n').trim();
+        setAIStatus('ok', 'Done');
+        return content;
+    }
+
+    async function callAI(messages, opts={}){
+      const provider = state.settings.apiProvider || 'openrouter';
+      const apiKey = getApiKey();
+      if (!apiKey){
+        toggleAIMenu(true);
+        $('#apiKeyInput').focus();
+        throw new Error('Missing API key');
+      }
+      setAIStatus('busy', 'Thinking…');
+
+      if (provider === 'gemini') {
+        return callGemini(messages, opts);
+      }
+
+      // OpenRouter
+      const model = state.settings.model || 'anthropic/claude-3.5-sonnet';
+      const { temperature: tempOverride, max_tokens: maxTokensOverride, ...restOpts } = opts;
+      const temperature = tempOverride ?? (state.settings.temperature ?? 0.7);
+      let maxTokens = maxTokensOverride ?? (state.settings.maxTokens ?? DEFAULT_DOC.settings.maxTokens);
+      maxTokens = Number(maxTokens);
+      if (!Number.isFinite(maxTokens)) maxTokens = DEFAULT_DOC.settings.maxTokens;
+      maxTokens = Math.max(1, Math.min(maxTokens, 8192));
+      const body = {
+        model,
+        messages,
+        temperature,
+        max_tokens: maxTokens,
+        ...restOpts
+      };
+
+      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method:'POST',
+        headers: {
+          'Authorization': 'Bearer ' + apiKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!res.ok){
+        const txt = await res.text().catch(()=> '');
+        setAIStatus('err', 'HTTP ' + res.status);
+        throw new Error('OpenRouter error: ' + res.status + ' ' + txt);
+      }
+      const json = await res.json();
+
+      // Robust content extraction across providers
+      let content = '';
+      try {
+        const choice = json?.choices?.[0];
+        let msgContent = choice?.message?.content;
+        if (typeof msgContent === 'string') {
+          content = msgContent;
+        } else if (Array.isArray(msgContent)) {
+          content = msgContent.map(p => (typeof p === 'string' ? p : (p?.text ?? p?.content ?? ''))).join('\n');
+        } else if (msgContent && typeof msgContent === 'object') {
+          content = msgContent?.text ?? '';
+        }
+        // Fallbacks
+        if (!content || !String(content).trim()) {
+          const alt = choice?.message?.content?.[0]?.text ?? choice?.message?.content?.[0]?.content ?? '';
+          if (alt) content = alt;
+        }
+      } catch(_) {}
+
+      content = typeof content === 'string' ? content : String(content ?? '');
+
+      setAIStatus('ok', 'Done');
+      return content;
+    }
+
+    // -------------------
+    // Prompts
+    // -------------------
+    function baseSystemPrompt(){
+      return `You are StoryStudio, a world-class fiction co-author.
+- Follow the Story Bible (world/tone), then the Chapter Narrative (beats), then continuity.
+- Preserve the existing voice, POV, tense, and pacing unless explicitly asked to change.
+- Prefer vivid, specific prose. "Show, don't tell." Ground abstraction in concrete details.
+- Avoid repetitive restatement. Continue seamlessly from provided context without rehashing.
+- Output plain text paragraphs only unless asked for markdown.`;
+    }
+
+    function getChapterContext(forPrompt = true){
+      const ch = currentChapter();
+      
+      const activeChars = state.characters.filter(x => ch.activeCharacters.includes(x.id));
+      const charLines = activeChars.map(c => `- ${c.name}: ${c.bio || ''} Goals: ${c.goals || ''} Voice: ${c.voice || ''}`).join('\n');
+      const storyBible = state.storyBible || '';
+      const narrative = ch.narrative || '';
+
+      if (!forPrompt) {
+        const docTxt = htmlToPlain(ch.contentHTML || '');
+        const ctx = docTxt.slice(Math.max(0, docTxt.length - 2000));
+        return { storyBible, narrative, charLines, contextTail: ctx, docTxt };
+      }
+      
+      let contextContent = '';
+      if (state.settings.useChapterContext) {
+        const includedChapters = state.chapters.filter(c => c.contextInclude);
+        contextContent = includedChapters.map(c => {
+          const title = `Chapter: ${c.title || 'Untitled'}`;
+          const content = c.contextSummary ? `Summary: ${c.contextSummary}` : htmlToPlain(c.contentHTML || '');
+          return `${title}\n${content}`;
+        }).join('\n\n---\n\n');
+      } else {
+        const fullText = state.chapters.map(c => htmlToPlain(c.contentHTML || '')).join('\n\n');
+        const tokenSize = state.settings.contextTokenSize || 4096;
+        // Approx 4 chars per token
+        const charSize = tokenSize * 3.5;
+        contextContent = fullText.slice(-charSize);
+      }
+
+      return { storyBible, narrative, charLines, contextText: contextContent };
+    }
+
+    function buildContextBlock(){
+      const {storyBible, narrative, charLines, contextText} = getChapterContext();
+      return `Story Bible:
+${storyBible || '(none)'}
+---
+Active Characters:
+${charLines || '(none)'}
+---
+Narrative Guide:
+${narrative || '(none)'}
+---
+Story Context (recent or selected chapters):
+${contextText || '(none)'}`;
+    }
+
+    // -------------------
+    // Selection Storage for AI Tools
+    // -------------------
+    let storedSelection = { text: '', range: null };
+
+    function storeCurrentSelection() {
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount > 0) {
+        const range = sel.getRangeAt(0);
+        if ($('#editor').contains(range.commonAncestorContainer)) {
+          storedSelection.text = range.toString();
+          storedSelection.range = range.cloneRange();
+        }
+      }
+    }
+
+    function restoreStoredSelection() {
+      if (storedSelection.range) {
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(storedSelection.range);
+      }
+    }
+
+    function getStoredOrCurrentSelection() {
+      const currentText = getSelectedText();
+      if (currentText) {
+        return currentText;
+      }
+      return storedSelection.text || '';
+    }
+
+    // -------------------
+    // AI Tool Handlers
+    // -------------------
+    async function compactChapter(id) {
+      const chapter = state.chapters.find(c => c.id === id);
+      if (!chapter) {
+        toast("Chapter not found.");
+        return;
+      }
+
+      const content = htmlToPlain(chapter.contentHTML || '');
+      if (content.length < 200) {
+        toast("Chapter is too short to summarize.");
+        return;
+      }
+
+      setAIStatus('busy', 'Summarizing...');
+      toast("Generating summary...");
+      
+      try {
+        const messages = [
+          { role: 'system', content: "You are a summarization expert. Create a dense, fact-based summary in one or two sentences. Output plain text only, no markdown." },
+          { role: 'user', content: `Summarize the key events, character actions, and outcomes of this chapter text:\n\n${content}` }
+        ];
+        const raw = await callAI(messages, { max_tokens: 150 });
+
+        // Local fallback if AI returns nothing
+        let finalSummary = raw;
+        if (!finalSummary) {
+          const sents = content.replace(/\s+/g, ' ').match(/[^.!?]+[.!?]+/g) || [];
+          const first = sents[0] || content.slice(0, 160);
+          const second = sents[1] || '';
+          finalSummary = (first + (second && second !== first ? ' ' + second : '')).trim();
+        }
+
+        if (!finalSummary) {
+          throw new Error("Empty summary received");
+        }
+
+        chapter.contextSummary = finalSummary;
+        debouncedSave();
+        renderContextChapterList();
+        setAIStatus('ok', 'Done');
+        toast("Summary generated successfully!");
+      } catch (e) {
+        console.error("Summary generation error:", e);
+        setAIStatus('err', 'Error');
+        toast("Could not generate summary: " + e.message);
+      }
+    }
+
+    async function openCurrentChapterSummary(){
+      const ch = currentChapter();
+      if (!ch) return;
+      if (ch.contextSummary) {
+        alert(`Chapter Summary:\n\n${ch.contextSummary}`);
+        return;
+      }
+      if (!confirm('No summary exists for this chapter. Generate a compact summary now?')) return;
+      await compactChapter(ch.id);
+      if (ch.contextSummary) {
+        alert(`Chapter Summary:\n\n${ch.contextSummary}`);
+      } else {
+        toast('No summary available.');
+      }
+    }
+
+    async function aiContinue(){
+      const {contextTail} = getChapterContext(false);
+      const messages = [
+        { role:'system', content: baseSystemPrompt() },
+        { role:'user', content: `${buildContextBlock()}
+
+Excerpt (end of chapter up to cursor):
+${getExcerptNearCursor()}
+
+Task:
+Continue the scene in the same voice for ~200-300 words, advancing micro-tension. Avoid repeating lines from the excerpt. Output only the new prose.` }
+      ];
+      const out = await callAI(messages);
+      const normalized = normalizeAIResponse(out);
+      insertTextAtCursor('\n' + normalized + '\n');
+    }
+
+    function getExcerptNearCursor(){
+      // Fallback to last 1200 chars if caret not found.
+      const r = getSelectionInEditor();
+      const ch = currentChapter();
+      const docTxt = htmlToPlain(ch.contentHTML || '');
+      if (!r) return docTxt.slice(Math.max(0, docTxt.length - 1200));
+      // Use content before cursor
+      const walker = document.createTreeWalker($('#editor'), NodeFilter.SHOW_TEXT, null);
+      let before = '';
+      const sel = window.getSelection();
+      let found = false;
+      while(walker.nextNode()){
+        const node = walker.currentNode;
+        if (node === sel.anchorNode){
+          before += (node.textContent || '').slice(0, sel.anchorOffset);
+          found = true;
+          break;
+        } else {
+          before += node.textContent || '';
+        }
+      }
+      if (!found) return docTxt.slice(Math.max(0, docTxt.length - 1200));
+      return before.slice(Math.max(0, before.length - 1200));
+    }
+
+    async function aiRewrite(){
+      const sel = getStoredOrCurrentSelection();
+      if (!sel) return toast('Select some text to rewrite.');
+      
+      // Restore selection if it was stored
+      if (storedSelection.range && !getSelectedText()) {
+        restoreStoredSelection();
+      }
+      
+      const style = ($('#styleHint').value || 'Improve clarity while preserving voice.');
+      const messages = [
+        { role:'system', content: baseSystemPrompt() },
+        { role:'user', content: `${buildContextBlock()}
+
+Selected text:
+"""${sel}"""
+
+Task:
+Rewrite the selected text with the following directives:
+- ${style}
+- Keep factual content and continuity.
+- Return only the rewritten passage, no preface.` }
+      ];
+      const out = await callAI(messages);
+      const normalized = normalizeAIResponse(out);
+      replaceSelection(normalized);
+      
+      // Clear stored selection after use
+      storedSelection = { text: '', range: null };
+    }
+
+    async function aiExpand(){
+      const sel = getStoredOrCurrentSelection();
+      if (!sel) return toast('Select some text to expand.');
+      
+      // Restore selection if it was stored
+      if (storedSelection.range && !getSelectedText()) {
+        restoreStoredSelection();
+      }
+      
+      const hint = ($('#expandHint').value || 'Expand by ~200 words with sensory detail and subtext.');
+      const messages = [
+        { role:'system', content: baseSystemPrompt() },
+        { role:'user', content: `${buildContextBlock()}
+
+Selected text:
+"""${sel}"""
+
+Task:
+Expand the passage: ${hint}
+Maintain the voice and POV. Avoid padding; use concrete images. Output just the expanded passage.` }
+      ];
+      const out = await callAI(messages);
+      replaceSelection(out.trim());
+      
+      // Clear stored selection after use
+      storedSelection = { text: '', range: null };
+    }
+
+    async function aiVivid(){
+      const sel = getSelectedText();
+      const target = sel || getExcerptNearCursor();
+      const messages = [
+        { role:'system', content: baseSystemPrompt() },
+        { role:'user', content: `${buildContextBlock()}
+
+Passage to enrich:
+"""${target}"""
+
+Task:
+Infuse vivid sensory detail and specific concrete imagery while preserving pacing and voice. Tighten clichés. Output only the improved prose.` }
+      ];
+      const out = await callAI(messages);
+      const normalized = normalizeAIResponse(out);
+      if (sel) replaceSelection(normalized);
+      else insertTextAtCursor('\n' + normalized + '\n');
+    }
+
+    async function aiPolish(){
+      const sel = getSelectedText();
+      if (!sel) return toast('Select some text to polish.');
+      const messages = [
+        { role:'system', content: baseSystemPrompt() + '\nWhen polishing, make minimal, high-quality edits.' },
+        { role:'user', content: `${buildContextBlock()}
+
+Selected text:
+"""${sel}"""
+
+Task:
+Copyedit for grammar, flow, and style. Keep character voice and narrative tone. Return only the corrected text.` }
+      ];
+      const out = await callAI(messages, { max_tokens: 700 });
+      const normalized = normalizeAIResponse(out);
+      replaceSelection(normalized);
+    }
+
+    async function aiOutline(){
+      const {docTxt} = getChapterContext();
+      const messages = [
+        { role:'system', content: baseSystemPrompt() },
+        { role:'user', content: `${buildContextBlock()}
+
+Current chapter text:
+"""${docTxt}"""
+
+Task:
+Propose a crisp outline with 6–10 beats (setup, inciting moment, escalation, pivot, climax, consequence). Use bullet points.` }
+      ];
+      const out = await callAI(messages, { max_tokens: 700 });
+      const normalized = normalizeAIResponse(out);
+      insertTextAtCursor('\n' + normalized + '\n');
+    }
+
+    async function aiSummary(){
+      const {docTxt} = getChapterContext();
+      const messages = [
+        { role:'system', content: baseSystemPrompt() },
+        { role:'user', content: `${buildContextBlock()}
+
+Summarize the current chapter in 4–6 sentences focusing on character wants, conflicts, and turnings:` }
+      ];
+      const out = await callAI(messages);
+      const normalized = normalizeAIResponse(out);
+      insertTextAtCursor('\n' + normalized + '\n');
+    }
+
+    async function aiRefineBible(){
+      const messages = [
+        { role:'system', content: baseSystemPrompt() },
+        { role:'user', content: `Improve the Story Bible for clarity and utility for drafting. Suggest rules, tone anchors, recurring motifs, and style guardrails.
+
+Current Story Bible:
+${state.storyBible || '(none)'}
+Return a refined, well-structured Bible.` }
+      ];
+      const out = await callAI(messages);
+      const normalized = normalizeAIResponse(out);
+      $('#storyBible').value = normalized;
+      state.storyBible = normalized;
+      debouncedSave();
+    }
+
+    async function aiConsistency(){
+      const ch = currentChapter();
+      const {docTxt} = getChapterContext();
+      const messages = [
+        { role:'system', content: baseSystemPrompt() },
+        { role:'user', content: `${buildContextBlock()}
+
+Continuity check for the chapter. List:
+- Potential contradictions
+- Loose threads to track
+- Style/POV slips
+- Character voice notes
+
+Chapter text:
+"""${docTxt}"""` }
+      ];
+      const out = await callAI(messages);
+      insertTextAtCursor('\n' + out.trim() + '\n');
+    }
+
+    async function aiRefineNarrative(){
+      const ch = currentChapter();
+      const messages = [
+        { role:'system', content: baseSystemPrompt() },
+        { role:'user', content: `Tighten and clarify the Chapter Narrative into a short beat plan with Goal, Stakes, Obstacle, Reversal, Outcome.
+
+Current:
+${ch.narrative || '(none)'}` }
+      ];
+      const out = await callAI(messages);
+      const normalized = normalizeAIResponse(out);
+      $('#narrative').value = normalized;
+      ch.narrative = normalized;
+      debouncedSave();
+    }
+
+    async function aiBeatSheet(){
+      const ch = currentChapter();
+      const messages = [
+        { role:'system', content: baseSystemPrompt() },
+        { role:'user', content: `Given the Story Bible and Chapter Narrative, produce a beat sheet with timestamps-as-headers (approximate) and actionable micro-beats:
+
+${buildContextBlock()}` }
+      ];
+      const out = await callAI(messages, { max_tokens: 800 });
+      const normalized = normalizeAIResponse(out);
+      insertTextAtCursor('\n' + normalized + '\n');
+    }
+
+    async function aiSetting(){
+      const prompt = ($('#settingPrompt').value || 'Generate a moody setting');
+      const messages = [
+        { role:'system', content: baseSystemPrompt() },
+        { role:'user', content: `${buildContextBlock()}
+
+Task:
+Write a vivid setting paragraph(s) for: ${prompt}
+Keep it compatible with the Story Bible and tone.` }
+      ];
+      const out = await callAI(messages, { max_tokens: 700 });
+      const normalized = normalizeAIResponse(out);
+      insertTextAtCursor('\n' + normalized + '\n');
+    }
+
+    async function aiNames(){
+      const prompt = ($('#namesPrompt').value || 'ten names for a fantasy desert nomad tribe');
+      const messages = [
+        { role:'system', content: baseSystemPrompt() },
+        { role:'user', content: `Suggest distinctive, pronounceable names: ${prompt}. Provide a short meaning or vibe for each, bullet list.` }
+      ];
+      const out = await callAI(messages);
+      const normalized = normalizeAIResponse(out);
+      insertTextAtCursor('\n' + normalized + '\n');
+    }
+
+    // -------------------
+    // Roleplay
+    // -------------------
+    function getChapterRP(){
+      const ch = currentChapter();
+      if (!ch.rp) {
+        ch.rp = {
+          history: [],
+          lastScene: '',
+          settings: {
+            stage: true,
+            terse: false,
+            first: false,
+            length: 'medium',
+            tone: 'neutral',
+            memory: '',
+            contextScope: 'tail',     // 'tail' | 'chapter' | 'story'
+            planning: false,          // Planning Mode
+            narrator: false,          // Neutral Narrator available
+          }
+        };
+      }
+      const s = ch.rp.settings || (ch.rp.settings = {});
+      if (typeof s.stage !== 'boolean') s.stage = true;
+      if (typeof s.terse !== 'boolean') s.terse = false;
+      if (typeof s.first !== 'boolean') s.first = false;
+      if (!s.length) s.length = 'medium';
+      if (!s.tone) s.tone = 'neutral';
+      if (typeof s.memory !== 'string') s.memory = '';
+      if (!s.contextScope) s.contextScope = 'tail';
+      if (typeof s.planning !== 'boolean') s.planning = false;
+      if (typeof s.narrator !== 'boolean') s.narrator = false;
+      return ch.rp;
+    }
+    function renderRPSettings(){
+      const rp = getChapterRP();
+      const stage = document.getElementById('rpStageDir'); if (stage) stage.checked = !!rp.settings.stage;
+      const terse = document.getElementById('rpTerse'); if (terse) terse.checked = !!rp.settings.terse;
+      const first = document.getElementById('rpFirstPerson'); if (first) first.checked = !!rp.settings.first;
+      const len = document.getElementById('rpLength'); if (len) len.value = rp.settings.length || 'medium';
+      const tone = document.getElementById('rpTone'); if (tone) tone.value = rp.settings.tone || 'neutral';
+      const mem = document.getElementById('rpMemory'); if (mem) mem.value = rp.settings.memory || '';
+
+      const scope = document.getElementById('rpContextScope'); if (scope) scope.value = rp.settings.contextScope || 'tail';
+      const planning = document.getElementById('rpPlanningMode'); if (planning) planning.checked = !!rp.settings.planning;
+      const narrator = document.getElementById('rpNarrator'); if (narrator) narrator.checked = !!rp.settings.narrator;
+    }
+    async function rpRegenerate(){
+      const rp = getChapterRP();
+      let removed = false;
+      for (let i = rp.history.length - 1; i >= 0; i--){
+        if (rp.history[i].role === 'assistant'){
+          rp.history.splice(i, 1);
+          removed = true;
+          renderChat();
+          break;
+        }
+      }
+      if (!removed || !rp.history.length || rp.history[rp.history.length - 1].role !== 'user'){
+        return toast('Nothing to regenerate.');
+      }
+      const charFocus = rp.settings.lastCharFocus || '(none)';
+      const { narrative } = getChapterContext();
+      const ctxBlock = buildRPContextBlock(rp);
+      const messages = [
+        { role:'system', content: rpSystemPrompt() },
+        { role:'user', content: `${ctxBlock}
+
+Characters to speak this turn: ${charFocus}
+Scene impetus: ${narrative || '(use chapter narrative)'}
+
+Conversation so far:
+${rp.history.map(m => (m.role === 'user' ? 'User: ' : 'AI: ') + m.content).join('\n')}
+
+Respond only with the characters' lines (and optional stage directions per rules).` }
+      ];
+      const out = await callAI(messages);
+      const reply = (out || '').trim();
+      const { cleaned: cleanedReply } = processAndApplyAtCommands(reply);
+      rp.history.push({ role:'assistant', content: cleanedReply });
+      renderChat();
+      debouncedSave();
+    }
+    function rpUndo(){
+      const rp = getChapterRP();
+      if (!rp.history.length) return;
+      rp.history.pop();
+      renderChat();
+      debouncedSave();
+    }
+    let rpInFlight = false;
+
+
+    function rpSystemPrompt(){
+      const ch = currentChapter();
+      const rp = getChapterRP();
+
+      const active = state.characters.filter(c => ch.activeCharacters.includes(c.id));
+      const rosterLines = active.map(c => `- ${c.name}: ${c.bio || ''} Goals: ${c.goals || ''} Voice: ${c.voice || ''}`);
+      if (rp.settings.narrator) {
+        rosterLines.push(`- Narrator: A neutral, objective narrator/facilitator. Summarizes, asks clarifying questions, and can propose options. No inner monologue unless summarizing decisions.`);
+      }
+      const roster = rosterLines.join('\n');
+
+      const flags = {
+        stage: $('#rpStageDir') ? $('#rpStageDir').checked : (rp.settings.stage ?? true),
+        terse: $('#rpTerse') ? $('#rpTerse').checked : (rp.settings.terse ?? false),
+        first: $('#rpFirstPerson') ? $('#rpFirstPerson').checked : (rp.settings.first ?? false)
+      };
+      rp.settings.stage = flags.stage;
+      rp.settings.terse = flags.terse;
+      rp.settings.first = flags.first;
+
+      const length = rp.settings.length || 'medium';
+      const tone = rp.settings.tone || 'neutral';
+      const memory = rp.settings.memory || '';
+      const planning = !!rp.settings.planning;
+
+      const lengthRule = flags.terse ? 'concise, 1–2 sentences per line' :
+        (length === 'short' ? 'brief, 1–2 sentences per line' :
+        (length === 'long' ? 'a bit longer, up to 3–5 sentences per line' : 'natural length (1–4 sentences per line)'));
+
+      const planningPreamble = planning
+        ? `You are in Planning Mode. Conduct a structured, collaborative discussion between characters${rp.settings.narrator ? ' and the Narrator' : ''} to plan plot beats, decisions, and style.`
+        : `You will roleplay the selected characters in a scene.`;
+
+      const narratorRule = rp.settings.narrator
+        ? `The narrator may speak as "Narrator: ..." to summarize, guide, or offer options.`
+        : `Do not speak as a narrator; only include stage directions if allowed.`;
+
+      return `${planningPreamble} Rules:
+- Format each line as "Name: dialogue". ${flags.stage ? 'Include light stage directions in italics between asterisks like *She glances back*.' : 'Do not include stage directions.'}
+- Keep turns ${lengthRule}.
+- Maintain a ${tone} tone unless the immediate context strongly dictates otherwise.
+- Maintain continuity with the Story Bible and Chapter Narrative.
+- Characters and the user must collaboratively decide actions and plot turns; honor explicit choices or objections from either side and offer options when needed.
+- ${flags.first ? 'When appropriate, allow first-person voice in their dialogue.' : 'Avoid meta commentary and system talk.'}
+- ${narratorRule}
+- After your in-character response, you may append updates to the story guides by calling functions. These calls will be processed and hidden from the user.
+  - Use plain ASCII double quotes (") for all arguments. Do not use curly quotes.
+  - Do not wrap these calls in markdown or code fences.
+  - Place each call on its own line at the very end of the message.
+  - To add: @bible("new fact or detail") or @narrative("new plot point").
+  - To edit: @bible.edit("old entry text", "new entry text").
+  - To remove: @bible.remove("entry text to remove").
+  (The same .edit() and .remove() functions are available for @narrative).
+  Use these to build and refine the story canon based on what happens in the scene.
+
+Scene Memory (author notes to respect during RP):
+${memory || '(none)'}
+
+Cast:
+${roster || '(none)'}
+`;
+    }
+
+    function getScopedContextText(scope = 'tail'){
+      const ch = currentChapter();
+      const { contextTail, docTxt } = getChapterContext();
+      if (scope === 'chapter') return docTxt || '';
+      if (scope === 'story') {
+        const full = state.chapters.map(c => htmlToPlain(c.contentHTML || '')).join('\n\n');
+        // clamp to last ~8000 chars to avoid token overflow
+        return full.slice(Math.max(0, full.length - 8000));
+      }
+      return contextTail || '';
+    }
+
+    function buildRPContextBlock(rp){
+      const base = buildContextBlock();
+      const scope = rp?.settings?.contextScope || 'tail';
+      const scopeLabel = scope === 'story' ? 'Entire Story (combined chapters)' : (scope === 'chapter' ? 'Full Chapter' : 'Chapter Tail (recent context)');
+      const scopedText = getScopedContextText(scope);
+
+      return `${base}
+
+Context Text — ${scopeLabel}:
+"""${scopedText}"""`;
+    }
+
+    function processAndApplyAtCommands(text = '') {
+      const updates = {
+        storyBible: { added: 0, edited: 0, removed: 0 },
+        narrativeGuide: { added: 0, edited: 0, removed: 0 }
+      };
+      const ch = currentChapter();
+      if (!ch) return { cleaned: text, updates };
+
+      // Normalize curly quotes to ASCII and ensure string
+      let cleaned = String(text || '').replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
+
+      const applyFor = (target) => {
+        const guideKey = target === 'bible' ? 'storyBible' : 'narrativeGuide';
+        const stateKey = target === 'bible' ? 'storyBible' : 'narrative';
+        const stateObj = target === 'bible' ? state : ch;
+        const guideEl = target === 'bible' ? $('#storyBible') : $('#narrative');
+
+        // Add: @bible("...") / @narrative("...")
+        const addRe = new RegExp(`@${target}\\s*\\(\\s*(['"])([\\s\\S]*?)\\1\\s*\\)`, 'gi');
+        cleaned = cleaned.replace(addRe, (_match, _q, content) => {
+          const addition = (content || '').trim();
+          if (addition) {
+            const prev = (stateObj[stateKey] || '').trim();
+            const line = `- ${addition}`;
+            const hasExact = prev.split('\n').some(l => l.trim() === line);
+            if (!hasExact) {
+              stateObj[stateKey] = prev ? `${prev}\n\n${line}` : line;
+              updates[guideKey].added++;
+            }
+          }
+          return '';
+        });
+
+        // Edit: @bible.edit("old", "new")
+        const editRe = new RegExp(`@${target}\\s*\\.\\s*edit\\s*\\(\\s*(['"])([\\s\\S]*?)\\1\\s*,\\s*(['"])([\\s\\S]*?)\\3\\s*\\)`, 'gi');
+        cleaned = cleaned.replace(editRe, (_match, _q1, oldContent, _q2, newContent) => {
+          const oldText = (oldContent || '').trim();
+          const newText = (newContent || '').trim();
+          if (oldText && newText) {
+            const current = stateObj[stateKey] || '';
+            if (current.includes(oldText)) {
+              stateObj[stateKey] = current.replace(oldText, newText);
+              updates[guideKey].edited++;
+            }
+          }
+          return '';
+        });
+
+        // Remove: @bible.remove("text")
+        const removeRe = new RegExp(`@${target}\\s*\\.\\s*remove\\s*\\(\\s*(['"])([\\s\\S]*?)\\1\\s*\\)`, 'gi');
+        cleaned = cleaned.replace(removeRe, (_match, _q, content) => {
+          const toRemove = (content || '').trim();
+          if (toRemove) {
+            const current = stateObj[stateKey] || '';
+            const lines = current.split('\n');
+            const newLines = lines.filter(line => !line.includes(toRemove));
+            if (newLines.length < lines.length) {
+              stateObj[stateKey] = newLines.join('\n');
+              updates[guideKey].removed++;
+            }
+          }
+          return '';
+        });
+
+        if (guideEl) guideEl.value = stateObj[stateKey] || '';
+      };
+
+      applyFor('bible');
+      applyFor('narrative');
+
+      // Tidy up whitespace after stripping commands
+      const finalCleaned = cleaned
+        .replace(/[ \t]+\n/g, '\n')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
+
+      if (Object.values(updates).some(u => u.added || u.edited || u.removed)) {
+        notifyRPUpdates(updates);
+        debouncedSave();
+      }
+
+      return { cleaned: finalCleaned, updates };
+    }
+
+    function notifyRPUpdates(updates){
+      const labels = [];
+      const formatUpdate = (update, name) => {
+        const actions = [];
+        if (update.added) actions.push('added to');
+        if (update.edited) actions.push('edited');
+        if (update.removed) actions.push('removed from');
+        if (actions.length) {
+          labels.push(`${actions.join(', ')} ${name}`);
+        }
+      };
+      
+      formatUpdate(updates.storyBible, 'Story Bible');
+      formatUpdate(updates.narrativeGuide, 'Narrative Guide');
+
+      if (!labels.length) return;
+      toast(`AI ${labels.join(' & ')}`);
+    }
+
+    async function aiAutoPlot(){
+      const title = state.title || 'Untitled Story';
+      const messages = [
+        { role:'system', content: baseSystemPrompt() },
+        { role:'user', content: `Generate a concise Story Bible and an initial Chapter 1 plan for a new work titled "${title}".
+Provide:
+- Premise and world rules
+- Tone, motifs, genre guardrails
+- Protagonist, antagonist (brief), core conflict
+- 8–12 beat outline for Chapter 1
+
+Return Story Bible first, then "Chapter 1 Narrative" as a separate section.` }
+      ];
+      const out = await callAI(messages, { max_tokens: 1000, temperature: 0.7 });
+      const normalized = normalizeAIResponse(out);
+      // Heuristics: split into bible and chapter narrative if possible
+      const parts = normalized.split(/Chapter\s*1\s*Narrative[:\-]?\s*/i);
+      if (parts.length >= 2){
+        state.storyBible = parts[0].trim();
+        const ch = currentChapter();
+        ch.narrative = parts.slice(1).join('\n').trim();
+        $('#storyBible').value = state.storyBible;
+        $('#narrative').value = ch.narrative;
+      } else {
+        // Fallback: put everything into Story Bible
+        state.storyBible = normalized;
+        $('#storyBible').value = normalized;
+      }
+      debouncedSave();
+      toast('Auto plot generated.');
+    }
+
+    function renderChat(){
+      const log = $('#chatLog');
+      if (!log) return;
+      log.innerHTML = '';
+      const rp = getChapterRP();
+      const history = rp.history;
+      if (!history.length){
+        const empty = document.createElement('div');
+        empty.className = 'chat-empty';
+        empty.textContent = 'No messages yet. Say something to start the scene.';
+        log.appendChild(empty);
+        return;
+      }
+      history.forEach(m => {
+        const role = m.role === 'assistant' ? 'assistant' : 'user';
+        const wrapper = document.createElement('div');
+        wrapper.className = `chat-msg ${role}`;
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-bubble';
+        const meta = document.createElement('span');
+        meta.className = 'chat-meta';
+        meta.textContent = role === 'assistant' ? 'Characters' : 'You';
+        const text = document.createElement('div');
+        text.className = 'chat-text';
+        text.innerHTML = markdownToHtml(m.content);
+        bubble.appendChild(meta);
+        bubble.appendChild(text);
+        wrapper.appendChild(bubble);
+        log.appendChild(wrapper);
+      });
+      log.scrollTop = log.scrollHeight;
+    }
+
+    async function rpSend(){
+      const inputEl = $('#chatInput');
+      const btn = $('#chatSendBtn');
+      const text = inputEl.value.trim();
+      if (!text || rpInFlight) return;
+
+      if (text.startsWith('@')) {
+        if (handleChatCommand(text)) {
+          inputEl.value = '';
+          return;
+        }
+      }
+
+      const rp = getChapterRP();
+      inputEl.value = '';
+      rp.history.push({ role:'user', content: text });
+      renderChat();
+
+      rpInFlight = true;
+      if (btn) btn.disabled = true;
+      if (inputEl) inputEl.disabled = true;
+
+      const { narrative } = getChapterContext();
+      const selectedCharIds = $$('#rpCharSelect input[type="checkbox"]').filter(x => x.checked).map(x => x.getAttribute('data-char'));
+      const selected = state.characters.filter(c => selectedCharIds.includes(c.id));
+      const names = selected.map(c => c.name);
+      if (rp.settings.narrator && selectedCharIds.includes('__narrator__')) {
+        names.push('Narrator');
+      }
+      const charFocus = names.join(', ') || (rp.settings.planning && rp.settings.narrator ? 'Narrator' : '(none)');
+      rp.settings.lastCharFocus = charFocus;
+
+      const ctxBlock = buildRPContextBlock(rp);
+      const messages = [
+        { role:'system', content: rpSystemPrompt() },
+        { role:'user', content: `${ctxBlock}
+
+Characters to speak this turn: ${charFocus}
+Scene impetus: ${narrative || '(use chapter narrative)'}
+
+Conversation so far:
+${rp.history.map(m => (m.role === 'user' ? 'User: ' : 'AI: ') + m.content).join('\n')}
+
+Respond only with the characters' lines (and optional stage directions per rules).` }
+      ];
+      try{
+        const out = await callAI(messages);
+        const reply = (out || '').trim();
+        
+        const { cleaned: cleanedReply } = processAndApplyAtCommands(reply);
+        
+        rp.history.push({ role:'assistant', content: cleanedReply });
+        renderChat();
+        debouncedSave();
+      } finally {
+        rpInFlight = false;
+        if (btn) btn.disabled = false;
+        if (inputEl) inputEl.disabled = false;
+      }
+    }
+
+
+    function clearChat(){
+      if (!confirm('Clear the current roleplay chat?')) return;
+      const rp = getChapterRP();
+      rp.history.length = 0;
+      rp.lastScene = '';
+      renderChat();
+      debouncedSave();
+    }
+
+
+    // -------------------
+    // Quick prompt
+    // -------------------
+    async function quickPrompt(runReplace=true){
+      const prompt = $('#quickPromptArea').value.trim();
+      if (!prompt) return;
+      const selection = getSelectedText() || getExcerptNearCursor();
+      const messages = [
+        { role:'system', content: baseSystemPrompt() },
+        { role:'user', content: `${buildContextBlock()}
+
+Selected/context text:
+"""${selection}"""
+
+Instruction:
+${prompt}
+
+Constraints:
+- Return only the result prose. No prefaces.` }
+      ];
+      const out = await callAI(messages, { max_tokens: 900 });
+      const normalized = normalizeAIResponse(out);
+      if (runReplace && getSelectedText()) replaceSelection(normalized);
+      else insertTextAtCursor('\n' + normalized + '\n');
+      hideModal('quickModal');
+    }
+
+    // -------------------
+    // Event wiring
+    // -------------------
+    function wire(){
+      // Header
+      $('#docTitle').addEventListener('input', ()=>{
+        state.title = $('#docTitle').value;
+        $('#saveStatus').textContent = 'Saving…';
+        debouncedSave();
+      });
+      $('#aiMenuBtn').addEventListener('click', (e)=>{
+        e.stopPropagation();
+        renderApiKeysUI();
+        $('#apiKeyInput').value = '';
+        if ($('#apiKeyLabelInput')) $('#apiKeyLabelInput').value = '';
+        $('#apiKeyAddGroup')?.classList.add('hidden');
+        toggleAIMenu();
+      });
+      $('#aiMenuClose').addEventListener('click', (e)=>{
+        e.preventDefault();
+        toggleAIMenu(false);
+      });
+      $('#modelSelect').addEventListener('change', ()=>{
+        state.settings.model = $('#modelSelect').value;
+        debouncedSave();
+      });
+      $('#tempInput').addEventListener('change', ()=>{
+        const raw = parseFloat($('#tempInput').value);
+        const sanitized = Number.isFinite(raw) ? Math.max(0, Math.min(raw, 2)) : (state.settings.temperature ?? 0.7);
+        state.settings.temperature = sanitized;
+        $('#tempInput').value = sanitized;
+        debouncedSave();
+      });
+      $('#maxTokensInput').addEventListener('change', ()=>{
+        const raw = parseInt($('#maxTokensInput').value, 10);
+        const sanitized = Number.isFinite(raw) ? Math.max(1, Math.min(raw, 8192)) : (state.settings.maxTokens ?? DEFAULT_DOC.settings.maxTokens);
+        state.settings.maxTokens = sanitized;
+        $('#maxTokensInput').value = sanitized;
+        debouncedSave();
+      });
+      $('#apiProviderSelect').addEventListener('change', ()=>{
+        state.settings.apiProvider = $('#apiProviderSelect').value;
+        renderApiKeysUI();
+        fetchModels();
+        debouncedSave();
+      });
+      $('#saveSettingsBtn').addEventListener('click', ()=>{
+        const provider = state.settings.apiProvider || 'openrouter';
+        // If user typed a new key in the add area, save it
+        const k = ($('#apiKeyInput')?.value || '').trim();
+        const label = ($('#apiKeyLabelInput')?.value || '').trim();
+        if (k) {
+          addApiKeyForProvider(provider, k, label);
+          $('#apiKeyInput').value = '';
+          if ($('#apiKeyLabelInput')) $('#apiKeyLabelInput').value = '';
+          $('#apiKeyAddGroup')?.classList.add('hidden');
+          toast('API key added');
+        }
+        // Ensure the selected key is set active
+        const sel = $('#apiKeySelect');
+        if (sel && sel.value) {
+          setActiveApiKeyId(provider, sel.value);
+        }
+        toggleAIMenu(false);
+      });
+      // Additional API key manager wiring
+      const addApiKeyBtn = $('#addApiKeyBtn');
+      if (addApiKeyBtn) addApiKeyBtn.addEventListener('click', ()=>{
+        $('#apiKeyAddGroup')?.classList.remove('hidden');
+        $('#apiKeyInput')?.focus();
+      });
+      const cancelAddApiKeyBtn = $('#cancelAddApiKeyBtn');
+      if (cancelAddApiKeyBtn) cancelAddApiKeyBtn.addEventListener('click', ()=>{
+        $('#apiKeyAddGroup')?.classList.add('hidden');
+        if ($('#apiKeyInput')) $('#apiKeyInput').value = '';
+        if ($('#apiKeyLabelInput')) $('#apiKeyLabelInput').value = '';
+      });
+      const confirmAddApiKeyBtn = $('#confirmAddApiKeyBtn');
+      if (confirmAddApiKeyBtn) confirmAddApiKeyBtn.addEventListener('click', ()=>{
+        const provider = state.settings.apiProvider || 'openrouter';
+        const key = ($('#apiKeyInput')?.value || '').trim();
+        const label = ($('#apiKeyLabelInput')?.value || '').trim();
+        if (!key) { toast('Enter an API key.'); return; }
+        addApiKeyForProvider(provider, key, label);
+        renderApiKeysUI();
+        if ($('#apiKeyInput')) $('#apiKeyInput').value = '';
+        if ($('#apiKeyLabelInput')) $('#apiKeyLabelInput').value = '';
+        $('#apiKeyAddGroup')?.classList.add('hidden');
+        toast('API key added');
+      });
+      const apiKeySelect = $('#apiKeySelect');
+      if (apiKeySelect) apiKeySelect.addEventListener('change', ()=>{
+        const provider = state.settings.apiProvider || 'openrouter';
+        if (apiKeySelect.value) setActiveApiKeyId(provider, apiKeySelect.value);
+      });
+      const deleteApiKeyBtn = $('#deleteApiKeyBtn');
+      if (deleteApiKeyBtn) deleteApiKeyBtn.addEventListener('click', ()=>{
+        const provider = state.settings.apiProvider || 'openrouter';
+        const sel = $('#apiKeySelect');
+        if (!sel || !sel.value) return;
+        if (!confirm('Delete the selected API key?')) return;
+        deleteApiKeyForProvider(provider, sel.value);
+        renderApiKeysUI();
+      });
+      // Enhanced Theme Selector
+      function toggleThemeMenu(force) {
+        const menu = $('#themeMenu');
+        const btn = $('#themeSelectorBtn');
+        if (!menu || !btn) return;
+        const shouldOpen = typeof force === 'boolean' ? force : menu.classList.contains('hidden');
+        if (shouldOpen){
+          menu.classList.remove('hidden');
+          btn.setAttribute('aria-expanded', 'true');
+        } else {
+          menu.classList.add('hidden');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      }
+
+      function isThemeMenuOpen(){
+        const menu = $('#themeMenu');
+        return !!(menu && !menu.classList.contains('hidden'));
+      }
+
+      function updateThemeSelector(theme) {
+        const themeIcon = $('#currentThemeIcon');
+        const themeLabel = $('#currentThemeLabel');
+        
+        const themeConfig = {
+          light: { icon: '☀️', label: 'Light' },
+          dark: { icon: '🌙', label: 'Dark' },
+          green: { icon: '🌿', label: 'Green' },
+          'amoled-black': { icon: '🖤', label: 'AMOLED' }
+        };
+        
+        const config = themeConfig[theme] || themeConfig.light;
+        if (themeIcon) themeIcon.textContent = config.icon;
+        if (themeLabel) themeLabel.textContent = config.label;
+      }
+
+      function applyTheme(theme) {
+        state.settings.theme = theme;
+        document.getElementById('app').setAttribute('data-theme', theme);
+        updateThemeSelector(theme);
+        debouncedSave();
+        
+        // Update active state in menu
+        $$('.theme-option').forEach(option => {
+          const isActive = option.getAttribute('data-theme') === theme;
+          option.classList.toggle('active', isActive);
+        });
+      }
+
+      // Theme selector button
+      $('#themeSelectorBtn').addEventListener('click', (e)=>{
+        e.stopPropagation();
+        toggleThemeMenu();
+      });
+
+      // Theme option buttons
+      $$('.theme-option').forEach(option => {
+        option.addEventListener('click', (e)=>{
+          const theme = option.getAttribute('data-theme');
+          applyTheme(theme);
+          toggleThemeMenu(false);
+        });
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener('click', (e)=>{
+        if (!isThemeMenuOpen()) return;
+        if (e.target.closest('#themeMenu') || e.target.closest('#themeSelectorBtn')) return;
+        toggleThemeMenu(false);
+      });
+
+      // Close menu with Escape key
+      document.addEventListener('keydown', (e)=>{
+        if (e.key === 'Escape' && isThemeMenuOpen()) {
+          toggleThemeMenu(false);
+        }
+      });
+
+      // Remove old theme selector event listener if it exists
+      const oldThemeSelector = $('#themeSelector');
+      if (oldThemeSelector) {
+        oldThemeSelector.removeEventListener('change', arguments.callee);
+        oldThemeSelector.parentNode.removeChild(oldThemeSelector);
+      }
+
+      // Context Modal
+      $('#contextSettingsBtn').addEventListener('click', () => {
+        renderContextChapterList();
+        showModal('contextModal');
+      });
+
+      const openSummaryBtn = $('#openSummaryBtn');
+      if (openSummaryBtn) openSummaryBtn.addEventListener('click', ()=> safeRun(openCurrentChapterSummary));
+      $('#contextSlider').addEventListener('input', e => {
+        const val = e.target.value;
+        $('#contextSliderValue').textContent = `${val} tokens`;
+      });
+      $('#contextSlider').addEventListener('change', e => {
+        state.settings.contextTokenSize = parseInt(e.target.value, 10);
+        debouncedSave();
+      });
+      $('#contextChapterToggle').addEventListener('change', e => {
+        state.settings.useChapterContext = e.target.checked;
+        debouncedSave();
+      });
+      $('#contextChapterList').addEventListener('click', e => {
+        const target = e.target;
+        const item = target.closest('.chapter-context-item');
+        if (!item) return;
+
+        const id = item.dataset.id;
+        const chapter = state.chapters.find(c => c.id === id);
+        if (!chapter) return;
+        
+        const action = target.dataset.action;
+
+        if (target.matches('[data-action="toggle-include"]')) {
+          chapter.contextInclude = target.checked;
+          debouncedSave();
+        } else if (target.closest('[data-action="compact"]')) {
+          safeRun(() => compactChapter(id));
+        } else if (target.closest('[data-action="open-summary"]')) {
+            if (chapter.contextSummary) {
+                alert(`Chapter Summary:\n\n${chapter.contextSummary}`);
+            } else {
+                // Generate summary if it doesn't exist
+                safeRun(async () => {
+                  await compactChapter(id);
+                  if (chapter.contextSummary) {
+                    alert(`Chapter Summary:\n\n${chapter.contextSummary}`);
+                  }
+                });
+            }
+        } else if (target.closest('[data-action="delete-summary"]')) {
+          chapter.contextSummary = null;
+          debouncedSave();
+          renderContextChapterList();
+        }
+      });
+
+      $$('.tab-button').forEach(btn => {
+        btn.addEventListener('click', ()=>{
+          const target = btn.getAttribute('data-tab-target');
+          if (target) setRightTab(target);
+        });
+      });
+
+      document.addEventListener('click', (e)=>{
+        if (!isAIMenuOpen()) return;
+        if (e.target.closest('#aiMenu') || e.target.closest('#aiMenuBtn')) return;
+        toggleAIMenu(false);
+      });
+      document.addEventListener('keydown', (e)=>{
+        if (e.key === 'Escape' && isAIMenuOpen()) toggleAIMenu(false);
+      });
+
+      // Toolbar formatting
+      $$('.toolbar .btn[data-cmd]').forEach(btn => {
+        btn.addEventListener('click', ()=> execCommand(btn.dataset.cmd));
+      });
+      $$('.toolbar .btn[data-block]').forEach(btn => {
+        btn.addEventListener('click', ()=> setBlock(btn.dataset.block));
+      });
+
+      // Editor
+      $('#chapterTitle').addEventListener('input', ()=>{
+        const ch = currentChapter(); ch.title = $('#chapterTitle').value; debouncedSave(); renderChapters();
+      });
+      $('#editor').addEventListener('input', onEditorInput);
+      
+      // Linebreak support for underscores
+      $('#editor').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const selection = window.getSelection();
+          if (selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const textNode = range.startContainer;
+            
+            // Get text content before cursor
+            let textBeforeCursor = '';
+            if (textNode.nodeType === Node.TEXT_NODE) {
+              textBeforeCursor = textNode.textContent.substring(0, range.startOffset);
+            } else if (textNode.nodeType === Node.ELEMENT_NODE) {
+              // If cursor is in an element, get the last text content
+              const walker = document.createTreeWalker(
+                textNode, 
+                NodeFilter.SHOW_TEXT, 
+                null, 
+                false
+              );
+              let currentNode;
+              while (currentNode = walker.nextNode()) {
+                if (range.intersectsNode(currentNode)) {
+                  textBeforeCursor = currentNode.textContent.substring(0, range.startOffset);
+                  break;
+                } else {
+                  textBeforeCursor = currentNode.textContent;
+                }
+              }
+            }
+            
+            // Check for three or more consecutive underscores without spaces
+            const underscoreMatch = textBeforeCursor.match(/_{3,}$/);
+            if (underscoreMatch) {
+              e.preventDefault();
+              
+              // Remove the underscores from the text
+              const underscoresLength = underscoreMatch[0].length;
+              if (textNode.nodeType === Node.TEXT_NODE) {
+                textNode.textContent = textNode.textContent.substring(0, range.startOffset - underscoresLength);
+                range.setStart(textNode, textNode.textContent.length);
+                range.setEnd(textNode, textNode.textContent.length);
+              }
+              
+              // Create a linebreak (horizontal rule)
+              const hr = document.createElement('hr');
+              hr.className = 'linebreak';
+              hr.style.cssText = `
+                border: none;
+                height: 2px;
+                background: linear-gradient(90deg, transparent, var(--accent), transparent);
+                margin: 20px 0;
+                opacity: 0.7;
+              `;
+              
+              // Insert the linebreak
+              range.insertNode(hr);
+              
+              // Add a new paragraph after the linebreak
+              const newParagraph = document.createElement('p');
+              newParagraph.innerHTML = '<br>';
+              hr.parentNode.insertBefore(newParagraph, hr.nextSibling);
+              
+              // Move cursor to the new paragraph
+              const newRange = document.createRange();
+              newRange.setStart(newParagraph, 0);
+              newRange.setEnd(newParagraph, 0);
+              selection.removeAllRanges();
+              selection.addRange(newRange);
+              
+              onEditorInput();
+            }
+          }
+        }
+      });
+
+      // Chapter & import/export
+      $('#addChapterBtn').addEventListener('click', ()=>{
+        saveCurrentChapterContent();
+        const ch = { id: uid(), title: "New Chapter", narrative: "", contentHTML: "<p></p>", activeCharacters: [], contextInclude: true, contextSummary: null };
+        state.chapters.push(ch);
+        state.ui.currentChapterId = ch.id;
+        debouncedSave(); renderChapters(); renderEditor(); renderActiveCharacters();
+      });
+      $('#importBtn').addEventListener('click', ()=> $('#importFile').click());
+      $('#importFile').addEventListener('change', async (e)=>{
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const text = await file.text();
+        $('#editor').innerText = text;
+        onEditorInput();
+        e.target.value = '';
+      });
+      $('#exportBtn').addEventListener('click', () => {
+        saveCurrentChapterContent();
+        $('#exportFileName').value = getSuggestedFileName();
+        const defaultRadio = document.querySelector('input[name="exportFormat"][value="txt"]');
+        if (defaultRadio) defaultRadio.checked = true;
+        showModal('exportModal');
+      });
+      $('#exportCancelBtn').addEventListener('click', () => {
+        hideModal('exportModal');
+      });
+      $('#exportConfirmBtn').addEventListener('click', () => {
+        const selected = document.querySelector('input[name="exportFormat"]:checked');
+        const format = selected ? selected.value : 'txt';
+        const base = $('#exportFileName').value || getSuggestedFileName();
+        hideModal('exportModal');
+        try {
+          exportDocument(format, base);
+        } catch (err) {
+          console.error(err);
+          toast('Export failed: ' + err.message);
+        }
+      });
+      $('#newBtn').addEventListener('click', ()=>{
+        if (!confirm('Start a new document? This will clear current content (but is still in localStorage history).')) return;
+        state = JSON.parse(JSON.stringify(DEFAULT_DOC));
+        state.ui.currentChapterId = state.chapters[0].id;
+        debouncedSave(); renderAll();
+      });
+
+      // Store selection when focusing on style/expand input fields
+      $('#styleHint').addEventListener('focus', storeCurrentSelection);
+      $('#expandHint').addEventListener('focus', storeCurrentSelection);
+
+      // AI buttons
+      $('#aiContinueBtn').addEventListener('click', ()=> safeRun(aiContinue));
+      $('#aiVividBtn').addEventListener('click', ()=> safeRun(aiVivid));
+      $('#aiFixBtn').addEventListener('click', ()=> safeRun(aiPolish));
+      $('#aiOutlineBtn').addEventListener('click', ()=> safeRun(aiOutline));
+      $('#aiSummaryBtn').addEventListener('click', ()=> safeRun(aiSummary));
+      $('#aiRewriteBtn').addEventListener('click', ()=> safeRun(aiRewrite));
+      $('#aiExpandBtn').addEventListener('click', ()=> safeRun(aiExpand));
+      $('#aiRefineBible').addEventListener('click', ()=> safeRun(aiRefineBible));
+      $('#aiConsistency').addEventListener('click', ()=> safeRun(aiConsistency));
+      $('#aiRefineNarrative').addEventListener('click', ()=> safeRun(aiRefineNarrative));
+      $('#aiBeatSheet').addEventListener('click', ()=> safeRun(aiBeatSheet));
+      $('#aiSettingBtn').addEventListener('click', ()=> safeRun(aiSetting));
+      $('#aiNamesBtn').addEventListener('click', ()=> safeRun(aiNames));
+
+      // Characters
+      $('#addCharacterBtn').addEventListener('click', () => showCharacterModal());
+      $('#charModalSaveBtn').addEventListener('click', saveCharacterFromModal);
+      $('#charModalDeleteBtn').addEventListener('click', () => {
+        const id = $('#charModalId').value;
+        if (id) {
+          deleteCharacter(id);
+          hideModal('characterModal');
+        }
+      });
+
+      // Roleplay
+      $('#chatSendBtn').addEventListener('click', ()=> safeRun(rpSend));
+      $('#chatClearBtn').addEventListener('click', clearChat);
+      const chatInput = $('#chatInput');
+      if (chatInput){
+        chatInput.addEventListener('keydown', (e)=>{
+          if (e.key === 'Enter' && !e.shiftKey){
+            e.preventDefault();
+            if (!rpInFlight) safeRun(rpSend);
+          }
+        });
+      }
+      const regenBtn = $('#chatRegenBtn');
+      if (regenBtn) regenBtn.addEventListener('click', ()=> safeRun(rpRegenerate));
+      const undoBtn = $('#chatUndoBtn');
+      if (undoBtn) undoBtn.addEventListener('click', rpUndo);
+
+      // Persist RP settings
+      ['rpStageDir','rpTerse','rpFirstPerson'].forEach(id=>{
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', ()=>{
+          const rp = getChapterRP();
+          rp.settings.stage = !!$('#rpStageDir')?.checked;
+          rp.settings.terse = !!$('#rpTerse')?.checked;
+          rp.settings.first = !!$('#rpFirstPerson')?.checked;
+          debouncedSave();
+        });
+      });
+      const lenSel = $('#rpLength');
+      if (lenSel) lenSel.addEventListener('change', ()=>{
+        const rp = getChapterRP();
+        rp.settings.length = $('#rpLength').value || 'medium';
+        debouncedSave();
+      });
+      const toneSel = $('#rpTone');
+      if (toneSel) toneSel.addEventListener('change', ()=>{
+        const rp = getChapterRP();
+        rp.settings.tone = $('#rpTone').value || 'neutral';
+        debouncedSave();
+      });
+      const memArea = $('#rpMemory');
+      if (memArea) memArea.addEventListener('input', ()=>{
+        const rp = getChapterRP();
+        rp.settings.memory = $('#rpMemory').value || '';
+        debouncedSave();
+      });
+
+      // New RP settings controls
+      const scopeSel = $('#rpContextScope');
+      if (scopeSel) scopeSel.addEventListener('change', ()=>{
+        const rp = getChapterRP();
+        rp.settings.contextScope = $('#rpContextScope').value || 'tail';
+        debouncedSave();
+      });
+      const planningToggle = $('#rpPlanningMode');
+      if (planningToggle) planningToggle.addEventListener('change', ()=>{
+        const rp = getChapterRP();
+        rp.settings.planning = !!$('#rpPlanningMode')?.checked;
+        debouncedSave();
+      });
+      const narratorToggle = $('#rpNarrator');
+      if (narratorToggle) narratorToggle.addEventListener('change', ()=>{
+        const rp = getChapterRP();
+        rp.settings.narrator = !!$('#rpNarrator')?.checked;
+        debouncedSave();
+        renderRPCharacterPills();
+      });
+      // Story bible & narrative
+      $('#storyBible').addEventListener('input', ()=>{
+        state.storyBible = $('#storyBible').value;
+        debouncedSave();
+      });
+      $('#narrative').addEventListener('input', ()=>{
+        const ch = currentChapter();
+        ch.narrative = $('#narrative').value;
+        debouncedSave();
+      });
+      const autoPlotBtn = $('#aiAutoPlotBtn');
+      if (autoPlotBtn) autoPlotBtn.addEventListener('click', ()=> safeRun(aiAutoPlot));
+
+      // Quick Prompt
+      $('#quickPromptBtn').addEventListener('click', ()=> showModal('quickModal'));
+      $('#quickRunBtn').addEventListener('click', ()=> safeRun(()=> quickPrompt($('#quickReplace').checked)));
+      
+
+      // Keyboard
+      document.addEventListener('keydown', (e)=>{
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+          e.preventDefault(); showModal('quickModal');
+          $('#quickPromptArea').focus();
+        }
+      });
+    }
+
+    async function safeRun(fn){
+      try {
+        await fn();
+      } catch (e){
+        console.error(e);
+        setAIStatus('err', 'Error');
+        toast('AI error: ' + e.message);
+      }
+    }
+
+    // -------------------
+    // Resizing Logic
+    // -------------------
+    function initResizing() {
+      const layout = $('.layout');
+      const leftResizer = $('#left-resizer');
+      const rightResizer = $('#right-resizer');
+
+      if (!layout || !leftResizer || !rightResizer) return;
+
+      const parseColumns = () => {
+        const raw = layout.style.gridTemplateColumns || window.getComputedStyle(layout).gridTemplateColumns;
+        const cols = raw.match(/(?:minmax\([^)]*\)|[^\s]+)/g) || [];
+        if (cols.length === 5) {
+          // Always keep the center track flexible so the left or right pane grows inward
+          cols[2] = 'minmax(0, 1fr)';
+        }
+        return cols;
+      };
+
+      const applyColumns = (cols) => {
+        if (cols.length === 5) {
+          layout.style.gridTemplateColumns = cols.join(' ');
+        }
+      };
+
+      const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+      // Initialize with saved widths but keep the center as flexible
+      const leftW = (state.ui && state.ui.leftSidebarWidth) ? state.ui.leftSidebarWidth : '300px';
+      const rightW = (state.ui && state.ui.rightSidebarWidth) ? state.ui.rightSidebarWidth : '380px';
+      applyColumns([leftW, '4px', 'minmax(0, 1fr)', '4px', rightW]);
+
+      let activeHandle = null;
+      let startX = 0;
+      let startWidth = 0;
+
+      const onDown = (e) => {
+        activeHandle = e.target === leftResizer ? 'left' : 'right';
+        startX = e.clientX;
+        const cols = parseColumns();
+        startWidth = parseFloat(cols[activeHandle === 'left' ? 0 : 4]);
+        document.body.style.cursor = 'ew-resize';
+        document.body.style.userSelect = 'none';
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+        e.preventDefault();
+      };
+
+      const onMove = (e) => {
+        if (!activeHandle) return;
+
+        const cols = parseColumns();
+        if (cols.length !== 5) return;
+
+        const rect = layout.getBoundingClientRect();
+
+        if (activeHandle === 'left') {
+          // Pin to left: measure from layout's left edge to cursor
+          const mouseX = e.clientX - rect.left;
+          const newWidth = clamp(mouseX, 200, 500);
+          cols[0] = `${Math.round(newWidth)}px`;
+        } else { // right
+          // Pin to right: measure from cursor to layout's right edge
+          const mouseXFromRight = rect.right - e.clientX;
+          const newWidth = clamp(mouseXFromRight, 250, 600);
+          cols[4] = `${Math.round(newWidth)}px`;
+        }
+
+        applyColumns(cols);
+      };
+
+      const onUp = () => {
+        if (!activeHandle) return;
+
+        const cols = parseColumns();
+        applyColumns(cols);
+
+        activeHandle = null;
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+
+        if (!state.ui) state.ui = {};
+        state.ui.leftSidebarWidth = cols[0];
+        state.ui.rightSidebarWidth = cols[4];
+        debouncedSave();
+      };
+
+      leftResizer.addEventListener('mousedown', onDown);
+      rightResizer.addEventListener('mousedown', onDown);
+    }
+
+    // -------------------
+    // Init
+    // -------------------
+    renderAll();
+    wire();
+    initResizing();
+    fetchModels();
+    if (!getApiKey()){
+      setTimeout(()=> {
+        renderApiKeysUI();
+        toggleAIMenu(true);
+        $('#apiKeyAddGroup')?.classList.remove('hidden');
+        $('#apiKeyInput').focus();
+      }, 400);
+    }
+    function afterRenderAdjust(){
+      const themeSelector = $('#themeSelector');
+      if (themeSelector) themeSelector.value = state.settings.theme || 'light';
+    }
+    afterRenderAdjust();
+
+  </script>
